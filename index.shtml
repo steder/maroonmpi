@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
-    <title>MMPI: Home</title>
+    <title>MaroonMPI: Home</title>
   </head>
   <body>
     <div id="header">
       <!--Logo-->
-      <h1>Welcome to the MMPI Homepage</h1>
+      <h1>Welcome to the MaroonMPI Homepage</h1>
       <hr />
     </div>
     <div id="sidebar">
@@ -33,6 +33,8 @@
         <li>MPE Logging Support(i.e.:<a href="http://www-unix.mcs.anl.gov/perfvis/software/viewers/index.htm">Jumpshot</a>)</li>
       </ul>
       </p>
+      <p>I've now moved the subversion repository to <a href="http://code.google.com/p/maroonmpi/">code.google.com</a>.  In addition to making it easier to contribute changes to the code, it should also be possible to post bug reports using the issues tab on the main project page.</p>
+      <p>Thanks again to the folks who have sent me e-mails with problems, questions, and encouragement.  Keep 'em coming!</p>
       <h4>6/21/06: More bug fixes in version 1.0.102</h4>
       <p>More minor tweaks and fixes for PyMPI syntax support.</p>
       <p>The current windows version is terribly out of date and
@@ -53,8 +55,8 @@ mpi.barrier()
 print b
       </code></pre></div>
         <h3>About MMPI</h3>
-      <p>MMPI <i>( pronounced "Mmmm, PIE!", or an acryonym for "MikeMPI"
-          )</i>, is a Python extension module that provides a simple
+      <p>MMPI <i>( pronounced "Mmmm, PIE!", is also an acryonym for the "Maroon Message Passing Interface"
+          )</i>, a Python extension module that provides a simple
         interface to the MPI library. MMPI builds as a single CPython
         extension module <i>(a shared library)</i> and is extended by a
         number of easy to modify Python files. MMPI installs like many
@@ -91,7 +93,7 @@ print b
           etc)</i>.</p>
       <h3>Downloading MMPI</h3>
       <p>
-      The most recent version of MMPI was released June 14th, 2006.  
+      The most recent version of MMPI was released October 16th, 2006.  
       Click one of the following links to download MMPI directly from 
       this site:
       </p>
