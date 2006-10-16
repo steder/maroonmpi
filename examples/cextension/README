@@ -1,0 +1,32 @@
+ABOUT:
+
+This is an example that illustrates using your own CExtensions that 
+share communicators with Python MPI programs.
+
+This also is a proof of concept to show that extension modules can make
+use of the MPI environment.
+
+BUILDING:
+
+To compile this example simply:
+
+$ make swig && make
+
+
+
+RUN:
+
+Start up python:
+
+$ python
+>>> import mpi #import MMPI
+>>> mpi.init()
+>>> import simplempi # import this new module
+>>> simplempi.getrank()
+
+Or simply:
+
+$ python test.py
+
+Assuming you see no errors the code ran successfully.
+

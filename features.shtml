@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
+    <title>MMPI: Features</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>MMPI Features</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="index.shtml">Home</a><br />
+        <a href="features.shtml">Features</a><br />
+        <a href="docs/">Documentation</a><br /> 
+        <a href="install.shtml">Installation</a><br />
+        <a href="examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+      </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+      <h3>Features</h3>
+      <p>MMPI has the following features:</p>
+      <ul>
+        <li>Compiles and Installs as a Python Package</li>
+        <li>Strict ANSI CPython extensions(Portable)</li>
+        <li>Similar syntax to C and Fortran MPI libraries</li>
+        <li>Implements the most commonly needed MPI functions</li>
+        <li>Supports Numeric arrays and numerical Python types</li>
+        <li>Barebones support for arbitrary Python objects</li>
+        <li>Multiple Executable support (MPMD)</li>
+        <li>Interoperates with C and Fortran Extensions</li>
+        <li>CPython core is simple and extensible</li>
+        <li>Multiple PythonMPI programming modes available
+          <ul>
+          <li><i>new default</i> "pythonic" interface</li>
+          <li>PyMPI compatibility interface</li>
+          <Li>Low-level core API</li>
+          </ul>
+        </li>
+      </ul>
+      <h3>Mis-features</h3>
+      <p>MMPI has the following problems:</p>
+      <ul>
+        <li>Similar syntax to C and Fortran MPI libraries</li>
+        <li>Doesn't have much testing/unit testing</li>
+        <li>Doesn't have a lot of documentation</li>
+        <li>Single Elements are received as 1-element arrays</li>
+        <li>Arrays don't remember their shape, shape information isn't sent</li>
+        <li>Not all MPI functions are implemented</li>
+        <li>Not all Collective Operations are implemented (MAX_LOC, MIN_LOC)</li>
+      </ul>
+
+      <h3>New Default Interface</h3>
+      <p>
+      MMPI now has a new default style that wraps the original low level function interface.  
+      This interface's goal is:
+      <ul>
+        <li>more "pythonic" rather then C style</li>
+        <ul>
+          <li>Type arguments are no longer required / supported for the majority of functions</li>
+          <li>Length arguments are no longer required / supported for the majority of functions</li>
+          <li>Tags, communicators, "root" arguments are now optional</li>
+        </ul>
+        <li>Single elements are no longer received as 1-element arrays but properly returned as single elements.</li>
+        <li>Arrays are now properly sent</li>
+        <li>More advanced collective operations are supported</li>
+        <li>Communicators now support more MPI operations as member functions.</li>
+      </ul>
+      </p>
+      <p>
+      Here's a quick example of an oldstyle hello world program using the new MMPI module:
+      <pre><code>
+      # old-style MMPI example:
+      from mpi import core as mpi
+      rank,size = mpi.init()
+      singleton_comm = mpi.comm_split( mpi.MPI_COMM_WORLD, rank, size )
+      mpi.barrier(mpi.MPI_COMM_WORLD)
+      if( rank == 0 ):
+          mpi.send( "Hello World", 11, mpi.MPI_CHAR, 1, 0, mpi.MPI_COMM_WORLD )
+      elif( rank == 1):
+          r = str( mpi.recv( 11, mpi.MPI_CHAR, 1, 0, mpi.MPI_COMM_WORLD ) )
+      else:
+          pass
+      </code></pre>
+      Now let's try it again with the new interface:
+      <pre><code>
+      # new-style MMPI example:
+      import mpi
+      rank,size = mpi.init()
+      singleton_comm = mpi.comm_split( mpi.COMM_WORLD, rank, size ) # option 1
+      singleton_comm = mpi.COMM_WORLD.split( rank, size ) # option 2
+      
+      mpi.barrier()
+      mpi.barrier(mpi.COMM_WORLD)
+      mpi.COMM_WORLD.barrier()
+      
+      if( rank == 0 ):
+          mpi.send( "Hello World", 1 )
+          mpi.send( "Hello World", 1, mpi.COMM_WORLD )
+          mpi.COMM_WORLD.send( "Hello World", 1 )
+      elif( rank == 1 ):
+          mpi.recv( 0 )
+          mpi.recv( 0, mpi.COMM_WORLD )
+          mpi.COMM_WORLD.recv( 0 )
+      else:
+          pass
+      </code></pre>
+      </p>
+      <h3>New PyMPI-style Interface</h3>
+      <h3>Original "core" Interface</h3>
+
+      <h3>MMPI and PyMPI</h3>
+      <p>PyMPI is an excellent MPI solution for Python.  Due to some problems with support for 
+        MPMD and Interfacing with C/Fortran Extensions that use MPI I ended up working on MMPI
+        as an alternative.</p>
+      <p>I'm currently working to implement all of the nice syntactic sugar of PyMPI while keeping
+        the C code base as simple as possible.  I have been extending MMPI pretty much exclusively
+        in Python, which has allowed me to make large changes to the behavior of MMPI quickly
+        and easily.  This also makes MMPI easier for other people to customize.</p>
+      <p>Currently the major difference between PyMPI and MMPI is the syntax.  The following 
+        table illustrates some of these differences.  Note how MMPI syntax is very similar to 
+        C/Fortran MPI.</p>
+      <p>
+        <table>
+          <thead>
+            <tr><th></th><th>PyMPI</th><th>MMPI</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Initialization</td>
+              <td><i>None<sup>*</sup></i></td>
+              <td>rank,size = mpi.init( [len(sys.argv),sys.argv]<sup>**</sup> )</td>
+            </tr>
+            <tr>
+              <td>Finding rank or size of a process</td>
+              <td>myrank = mpi.rank</td>
+              <td>myrank = mpi.comm_rank(<i>Communicator</i>)</td>
+            </tr>
+            <tr>
+              <td>Send</td>
+              <td>mpi.send(data,0[,0]**)</td>
+              <td>mpi.send(data,len(data),type,0,0,comm)</td>
+            </tr>
+            <tr>
+              <td>Comm Split</td>
+              <td>mpi.WORLD.split(color[,key]**)</td>
+              <td>mpi.comm_split(color,key,mpi.MPI_COMM_WORLD)</td>
+            </tr>
+          </tbody>
+        </table>
+        <sup>*</sup>: PyMPI Initializes MPI when the interpreter starts up<br/>
+        <sup>**</sup>: [] denote optional arguments<br />
+      </p>
+      <h3>Focus of MMPI</h3>
+      <p>To help understand why MMPI has the features/mis-features it currently has it is helpful
+        understand the role it currently fills.  While I'd like to add more features and make it more 
+        useful and general purpose, I want it to remain useful for it's original purpose.</p>
+      <p>MMPI is GLUE</p>
+      <p>MMPI provides a bridge between different computers, running different (MPI) programs 
+        in possibly different languages.  MMPI was needed to allow Python and Fortran programs 
+        to communicate ( using Multiple Executables (MPMD) ).  MMPI allows a Python program to 
+        run when some of it's components are written in C or Fortran and need to make MPI calls.</p>
+      <p>MMPI's currently primarily a low level interface that's pretty close to the machine.  MMPI
+        meets my needs in a Python MPI implementation because it's easy to build and install, and 
+        it's capable of interoperating with Fortran and C MPI.</p>
+      <h3>Todo</h3>
+      <p>I think that MMPI has a lot of potential, and that it could conceivably be the #1 Python+MPI
+        solution with some work.  In my opinion, much of the work that's needed is in implementing
+        the rest of the MPI standard and setting up unit testing.  I'd also like to see a higher level layer of MMPI
+        functions that shorten the argument lists for many of the functions.</p>
+      <p>For instance: send could easily be shortened from:</p>
+      <div id="code">
+        <pre><code>
+errorcode = mpi.send( Data, Size(Data), Type, Destination, Tag, Communicator )
+        </code></pre>
+      </div>
+      <p>to:</p>
+      <div id="code">
+        <pre><code>
+errorcode = mpi.send( Data, Destination, Communicator )
+# or even:
+errorcode = comm.send( Data, Destination )
+        </code></pre>
+        </div>
+      <p>In the first case you could simply provide some default values.  In the second case you would extend the Communicator objects to have a send method (and provide default values).  However, both are easy to envision and easy to implement.</p>
+      <p>There are other usability issues that don't really apply to my current application (for which MMPI is being developed), but I see are possible hurdles for getting MMPI used by other people.
+        Currently MMPI functions that recv a single element still return their result as an array of size
+        1.  This requires the programmer to pay attention and unpack single element return values
+        before using them.  It's not totally unreasonable to do, but it is counterintuitive and not very
+        "Python-like" in my opinion.</p>
+      <p>Another usability problem is that arrays currently do not hold their shapes.  Shape
+        information is not sent.  So whenever an 2D(or higher) array is sent it is received as a 
+        1D array.  Now this is not insurmountable as there is a reshape function.  However, for the 
+        average Python user this behavior is again completely counterintuitive.  The reason for this
+        limitation is for interoperability with Fortran and C versions of these MPI calls.  Fortran and
+        C programs simply expect the data, not a struct that bundles the array data and shape.
+        Fortran and C don't expect every send to really consist of 2 sends (both the shape and data).
+        </p>
+      <p>I hope to fix both of these problems and finish implementing all the MPI library functions in
+        future versions.  If you're interested in helping fix these issues, or if you've discovered other 
+        problems/inconsistencies, please send me an e-mail.</p>
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>mpi.request</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css"></link>
+</head>
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="http://www.penzilla.net/mmpi/docs/top.shtml">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          <a class="navbar" target="_top" href="http://www.penzilla.net/mmpi/">Project&nbsp;Homepage</a>
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <font size="-1"><b class="breadcrumbs">
+        <a href="mpi-module.html">Package&nbsp;mpi</a> ::
+        Module&nbsp;request
+      </b></font></br>
+    </td>
+    <td><table cellpadding="0" cellspacing="0">
+      <tr><td align="right"><font size="-2">[show&nbsp;private&nbsp;|&nbsp;<a href="../public/mpi.request-module.html">hide&nbsp;private</a>]</font></td></tr>
+      <tr><td align="right"><font size="-2">[<a href="frames.html"target="_top">frames</a>&nbsp;|&nbsp;<a href="mpi.request-module.html" target="_top">no&nbsp;frames</a>]</font></td></tr>
+    </table></td>
+</tr></table>
+
+<!-- =========== START OF MODULE DESCRIPTION =========== -->
+<h2 class="module">Module mpi.request</h2>
+
+<p>MMPI - MPI Interface for Python Copyright (C) 2005 Michael 
+Steder(steder&#64;gmail.com)</p>
+<p>This library is free software; you can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published by the 
+Free Software Foundation; either version 2 of the License, or (at your 
+option) any later version.</p>
+<p>This library is distributed in the hope that it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+Public License for more details.</p>
+You should have received a copy of the GNU General Public License 
+along with this program; if not, write to the Free Software Foundation, 
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+<hr/>
+
+<!-- =========== START OF CLASSES =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Classes</th></tr>
+<tr><td width="15%">
+  <b><a href="mpi.request.Request-class.html"><code>Request</code></a></b></td>
+  <td>Request objects encapsulate request ID's along with the
+buffers they are associated with and the count, type, source
+tag, and comm information.</td></tr>
+</table><br />
+
+
+<!-- =========== START OF FUNCTION SUMMARY =========== -->
+<table class="summary" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="summary">
+  <th colspan="2">Function Summary</th></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="mpi.request-module.html#irecv" class="summary-sig-name"><code>irecv</code></a>(<span class=summary-sig-arg>count</span>,
+          <span class=summary-sig-arg>datatype</span>,
+          <span class=summary-sig-arg>source</span>,
+          <span class=summary-sig-arg>tag</span>,
+          <span class=summary-sig-arg>comm</span>)</span></code>
+<br />
+request_id, buffer = irecv( count, datatype, source, tag, communicator )
+
+irecv and recv have the same argument list but differ in return values.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="mpi.request-module.html#isend" class="summary-sig-name"><code>isend</code></a>(<span class=summary-sig-arg>buffer</span>,
+          <span class=summary-sig-arg>count</span>,
+          <span class=summary-sig-arg>datatype</span>,
+          <span class=summary-sig-arg>destination</span>,
+          <span class=summary-sig-arg>tag</span>,
+          <span class=summary-sig-arg>comm</span>)</span></code>
+<br />
+request = isend(buffer, count, datatype, destination, tag, communicator)
+
+Send 'buffer', which consists of 'count' elements of type 'datatype',
+to the processor in 'comm' that has rank 'destination' and is waiting
+for a message with tag == 'tag'.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="mpi.request-module.html#test" class="summary-sig-name"><code>test</code></a>(<span class=summary-sig-arg>request</span>)</span></code>
+<br />
+ready = test( request )
+
+if ( test( request )):
+    print 'Non-blocking send or receive operation is complete!'
+
+Note that the request object is no longer valid after this call
+returns successfully and the operation is complete.</td></tr>
+<tr><td align="right" valign="top" width="15%"><font size="-1">&nbsp;</font></td>
+  <td><code><span class="summary-sig"><a href="mpi.request-module.html#wait" class="summary-sig-name"><code>wait</code></a>(<span class=summary-sig-arg>request</span>)</span></code>
+<br />
+result = wait( mpi_request )</td></tr>
+</table><br />
+
+
+<!-- =========== START OF FUNCTION DETAILS =========== -->
+<table class="details" border="1" cellpadding="3" cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="details">
+  <th colspan="2">Function Details</th></tr>
+</table>
+
+<a name="irecv"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">irecv</span>(<span class=sig-arg>count</span>,
+          <span class=sig-arg>datatype</span>,
+          <span class=sig-arg>source</span>,
+          <span class=sig-arg>tag</span>,
+          <span class=sig-arg>comm</span>)</span>
+  </h3>
+<pre class="literalblock">
+request_id, buffer = irecv( count, datatype, source, tag, communicator )
+
+irecv and recv have the same argument list but differ in return values.
+
+receive 'buffer', which consists of 'count' elements of type 'datatype',
+from the processor in 'comm' that has rank 'source' and is waiting
+for a message with tag == 'tag'.
+
+Request_Id:  This is an integer that provides a handle to pass
+to the functions 'test' and 'wait'.  
+Buffer:  Can be a single numeric value or a numeric array.
+Count:  Number of elements in an array, or 1 for scalar data.
+Datatype:  One of a few type constants defined in the mpi module.
+Source:  Rank in the specified communicator to receive this message from.
+Tag:  An arbitrary value used to route messages more precisely.
+      Tags are often ignored (especially in simpler programs).  If
+      you don't care what the tag is use:  MPI_ANY_TAG
+Comm:  The communicator that contains 'destination'
+--------------
+Example:
+
+# Start a recv for a 10 element array:
+&gt;&gt;&gt; request,buffer = mpi.irecv( 10, mpi.MPI_INT, 0, 0, mpi.MPI_COMM_WORLD )
+&gt;&gt;&gt; print 'Request #: %s'%(request)
+Request #: 134985008    
+&gt;&gt;&gt; print 'buffer: %s'%(buffer)
+buffer: [0 0 0 0 0 0 0 0 0 0]
+&gt;&gt;&gt; A = Numeric.array([1,2,3,4,5,6,7,8,9,10],Numeric.Int32)
+&gt;&gt;&gt; send_request = mpi.isend( A, 10, mpi.MPI_INT, 0, 0, mpi.MPI_COMM_WORLD )
+&gt;&gt;&gt; print 'Sending Request: %s'%(send_request)
+Sending Request: -1409286143
+&gt;&gt;&gt; mpi.wait( request )
+&gt;&gt;&gt; print 'buffer(after send): %s'%(buffer)
+buffer(after send): [ 1  2  3  4  5  6  7  8  9 10]
+
+--------------
+
+It's important to note that the initial value of 'buffer' is essentially
+undefined.  The values in 'buffer' can not be trusted until the irecv
+operation is complete.
+
+We can either use test() or wait() to determine that the irecv has
+finished.
+
+The wait() call blocks while test() returns immediately.
+
+After the call to wait() buffer is guaranteed to be set.
+</pre>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="isend"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">isend</span>(<span class=sig-arg>buffer</span>,
+          <span class=sig-arg>count</span>,
+          <span class=sig-arg>datatype</span>,
+          <span class=sig-arg>destination</span>,
+          <span class=sig-arg>tag</span>,
+          <span class=sig-arg>comm</span>)</span>
+  </h3>
+<pre class="literalblock">
+request = isend(buffer, count, datatype, destination, tag, communicator)
+
+Send 'buffer', which consists of 'count' elements of type 'datatype',
+to the processor in 'comm' that has rank 'destination' and is waiting
+for a message with tag == 'tag'.
+
+Buffer:  Can be a single numeric value or a numeric array.
+Count:  Number of elements in an array, or 1 for scalar data.
+Datatype:  One of a few type constants defined in the mpi module.
+Destination:  Rank in the specified communicator to send this message to.
+Tag:  An arbitrary value used to route messages more precisely.
+      Tags are often ignored (especially in simpler programs).  If
+      you don't care what the tag is use:  MPI_ANY_TAG
+Comm:  The communicator that contains 'destination'
+
+Request:  Request is an integer that represents this nonblocking
+send operation.  You use this handle to check on the status of this
+isend by calling functions like test() and wait().
+
+Example:
+
+request = send( Numeric.ones(10), 10, MPI_INT, 1, 7, MPI_COMM_WORLD )
+if ( test( request ) ):
+    print 'Send complete!'
+
+# Wait for the send to complete before proceeding:
+wait( request )
+</pre>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="test"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">test</span>(<span class=sig-arg>request</span>)</span>
+  </h3>
+<pre class="literalblock">
+ready = test( request )
+
+if ( test( request )):
+    print 'Non-blocking send or receive operation is complete!'
+
+Note that the request object is no longer valid after this call
+returns successfully and the operation is complete.
+</pre>
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+
+<a name="wait"></a>
+<table width="100%" class="func-details" bgcolor="#e0e0e0"><tr><td>
+  <h3><span class="sig"><span class="sig-name">wait</span>(<span class=sig-arg>request</span>)</span>
+  </h3>
+  <p>result = wait( mpi_request )</p>
+  request,buffer = mpi.irecv( ... ) # Do other work: # ... # wait for 
+  the receive to complete so I can use buffer: wait(request) print 
+  'Received:',buffer
+  <dl><dt></dt><dd>
+  </dd></dl>
+</td></tr></table>
+<br />
+
+
+<!-- =========== START OF NAVBAR =========== -->
+<table class="navbar" border="0" width="100%" cellpadding="0" bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="center">
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="http://www.penzilla.net/mmpi/docs/top.shtml">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="trees.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="indices.html">Index</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar">&nbsp;&nbsp;&nbsp;<a class="navbar" href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+    <th class="navbar" align="right" width="100%">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tr><th class="navbar" align="center">
+        <p class="nomargin">
+          <a class="navbar" target="_top" href="http://www.penzilla.net/mmpi/">Project&nbsp;Homepage</a>
+      </p></th></tr></table>
+    </th>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="left"><font size="-2">Generated by Epydoc 2.1 on Wed Jun 14 14:30:58 2006</font></td>
+    <td align="right"><a href="http://epydoc.sourceforge.net"
+                      ><font size="-2">http://epydoc.sf.net</font></a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
+    <title>MMPI: Installation</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>MMPI Installation</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="index.shtml">Home</a><br />
+        <a href="features.shtml">Features</a><br />
+        <a href="docs/">Documentation</a><br /> 
+        <a href="install.shtml">Installation</a><br />
+        <a href="examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+      </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+      <h3>Prerequisites</h3>
+      <P>You will need the following packages installed:
+        <ul>
+          <li>MPI Libraries (<a href="http://www-unix.mcs.anl.gov/mpi/mpich/">MPICH1</a> or <a href="http://www-unix.mcs.anl.gov/mpi/mpich2/">MPICH2</a>)
+            <ul>
+              <li>To avoid possible problems MPI must be compiled with shared library support!*</li>
+            </ul>
+          </li>
+          <li>The <em>mpicc</em> command (usually included as part of the MPI Library install)</li>
+          <li>Python 2.3 or higher
+            <ul>
+              <li>To avoid possible problems Python must be compiled with shared library support*</li>
+            </ul>
+          </li>
+          <li>Numeric Python, Numpy or Scipy.Core( one of the Python array packages )</li>
+        </ul>
+       </p>
+      <p>I recommend installing MPICH2 and Python2.4.  However, you should be fine with earlier versions.  Sorry not to go into more detail on installing these prerequisites but installing MPICH and Python can be non-trivial and is definitely well beyond the scope of this page.</p>
+      <h3>Step 1: Compile</h3>
+      <p>Assuming you have the prerequisites installed you should be able to compile MMPI using the included distutils setup.py script.</p>
+      <p>You will need to specify your "flavor" of Python Arrays <em>(Numeric, Numarray, or Numpy)</em> along with the name(or path) of your <em>mpicc</em> executable.  You <b>MUST</b> specify your version of Python Arrays and if the <em>mpicc</em> you want to use is not in your path you should specify it as well.
+      <P>If you do not know the path of your <em>mpicc</em> you can 
+      determine the path by running the *nix command <em>which</em>.</p>
+      <p>For instance:</p>
+      <div id="terminal">
+        <pre><code>
+$ which mpicc
+/usr/local/bin/mpicc
+        </code></pre>
+      </div>
+      <p>If you don't know where your <em>mpicc</em> is installed you'll 
+      have to find that out before we continue.</p>
+      <p>Now you should just be able to execute the following command
+        to build the package:</p>
+      <div id="terminal">
+        <pre><code>
+$ python setup.py --with-array=Numeric --with-mpicc=mpicc build
+        </code></pre>
+      </div>
+      <p>(Note about the above command:  In this example, "Numeric", not "Numarray" or "numpy" is the name of the installed Python array package.  Additionally, "mpicc" is the name of your C compiler that links with MPI, and it is in your path.</p>  
+      <p>Another build command that's slightly more complex:</p>
+      <div id="terminal">
+        <pre>
+        <code>
+$ python setup.py --with-array=numpy --with-mpicc=/usr/local/bin/mpicc build
+        </code>
+        </pre>
+      </div>
+      <p>(Another Note about the above commands: We're assuming that "python" is the name of your 
+        Python 2.3+ executable.  As with <em>mpicc</em>, if this does not exist or is called 
+        something else on your system you will need to figure out the appropriate value before we
+        can continue.)</p>
+      <p>If all goes well you should see the following:</p>
+      <div id="terminal">
+        <pre><code>
+steder@Penzilla mikempi $ python setup.py build
+['mmpi_module.c']
+Running MMPI setup...
+Python: /usr/bin/python
+Version: 2.4.2 (#1, Oct 31 2005, 12:11:31)
+[GCC 3.4.4 (Gentoo 3.4.4, ssp-3.4.4-1.0, pie-8.7.8)]
+running build
+running build_py
+running build_ext
+building '_mpi' extension
+/usr/local/bin/mpicc -fno-strict-aliasing -DNDEBUG -g -fPIC -Wall -ansi -DNDEBUG -fPIC -I/usr/in
+clude/python2.4 -c mmpi_module.c -o build/temp.linux-i686-2.4/mmpi_module.o
+mmpi_module.c: In function `mmpi_init':
+mmpi_module.c:216: warning: unused variable `dimensions'
+mmpi_module.c:216: warning: unused variable `data'
+mmpi_module.c:331:2: warning: #warning "TODO:  Define doc strings for: mpi_error, mpi_wtick, 
+mpi_wtime"
+mmpi_module.c: At top level:
+            [SNIP] Some warnings removed [/SNIP]
+mmpi_module.c:70: warning: 'mmpi_get_processor_name' declared `static' but never defined
+mmpi_module.c:71: warning: 'mmpi_get_version' declared `static' but never defined
+/usr/local/bin/mpicc -pthread -shared -DNDEBUG -g -fPIC -Wall -ansi -DNDEBUG build/temp.linux
+-i686-2.4/mmpi_module.o -o build/lib.linux-i686-2.4/mpi/_mpi.so
+        </code></pre>
+        <p>The above warnings may mention undefined functions and TODO:'s.  
+        These warnings are nothing to worry about, they are simply there 
+        as reminders(to the developers) of things that will be added in 
+        future versions.</p>
+      </div>
+      <h3>Step 2: Install</h3>
+      <p>At this point all you should have to do is type:</p>
+      <div id="terminal">
+        <pre><code>
+$ python setup.py install
+        </code></pre>
+        </div>
+      <p>By default that will try to install in the <i>site-packages</i> directory of whichever Python
+        you used to run the setup.py script.  If you'd like to install in a different place (perhaps you 
+        don't have adminstrator privileges on the computer you are installing on) you can use:</p>
+      <div id="terminal">
+        <pre><code>
+$ python setup.py --install-lib="/some/other/path/"
+        </code></pre>
+      </div>
+      <h3>Step 3: Check</h3>
+      <p>Now that you've got MMPI installed we should do a quick test to see if it's working.  
+        Try the following in Python:</p>
+      <div id="terminal">
+        <pre><code>
+import Numeric
+import mpi
+A = Numeric.ones( 12, 'i' )
+rank,size = mpi.init()
+request = mpi.isend( A, 12, mpi.MPI_INT, 0, 0, mpi.MPI_COMM_WORLD )
+B = mpi.recv( 12, mpi.MPI_INT, 0, 0, mpi.MPI_COMM_WORLD )
+        </code></pre>
+      </div>
+      <h3>Optional:  Troubleshooting</h3>
+      <p>At the moment I don't have any troubleshooting tips but this is where they'll go when I 
+        do.</p>
+      <h3>*Problems?</h3>
+      <p>Earlier I mention that the MPI Libraries and Python should be compiled with support
+        for shared libraries.  The reason that I recommend this is that certain applications that
+        need multiple language support (i.e. A Python Program that uses Compiled C or Fortran
+        extension codes that make calls into MPI ) will not work properly if they are 
+        statically linked.  <i>Specifically, each language will have to initialize and use its own copy of
+          of the MPI libraries.  This makes communicators passed between languages completely
+          invalid.  If this doesn't make a whole lot of sense feel free to e-mail me and I'll illustrate it 
+          more completely with an example.</i></p>
+      <p>For now it's enough to keep this in mind and try to use dynamic libraries when you can.</p>
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>

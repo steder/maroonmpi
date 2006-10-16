@@ -1,0 +1,90 @@
+a:link {color: blue; text-decoration: underline; }
+a:active {color: blue; text-decoration: underline; }
+a:visited {color: green; text-decoration: underline; }
+a:hover {color: red; text-decoration: none; }
+
+h1 { color: blue; }
+h2 { color: blue; }
+h3 { color: green; }
+h4 { color: green; }
+h5 { color: red; }
+
+.topic { color: green; }
+
+#code {
+    margin-left: 2em;
+    padding-left:1em;
+    background-color: #ffffdd;
+}
+
+#terminal {
+    margin-left: 2em;
+    padding-left:1em;
+    background-color: #dddddd;
+}
+
+table,td,th {
+    font-size:x-small;
+    border-style: double;
+    background-color: #ffffdd;
+    border-collapse: collapse;
+}
+
+img {
+    border-style:solid;
+    /* Tutorial pages are white */
+    border-color: white;
+    border-width:1px;
+}
+
+#header {
+	margin: 0;
+	padding: 0;
+	margin-bottom: 4px;
+}
+
+li#highlight {
+        text-decoration: underline
+}
+
+li.nobullet {
+           list-style: none;
+}
+
+ul { 
+   margin-left: 0;
+   padding-left: 20px;
+}
+
+#menu{
+	margin: 0;
+	padding: 0;
+	float: right;
+	width: 160px;
+	width: 164px;
+    border-left: 2px solid #dddddd;
+    background-color: #ddffdd;
+}
+
+#sidebar {
+	margin: 0;
+	padding: 0;
+	float: right;
+	width: 160px;
+	width: 164px;
+	width: 160px;
+}
+
+
+#content {
+	padding: 0;
+	margin: 0;
+	margin-right: 168px
+}
+
+#footer {
+	clear: both;
+	margin: 0;
+	padding: 0;
+	margin-top: 4px;
+}

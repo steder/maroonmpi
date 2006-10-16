@@ -1,0 +1,339 @@
+
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module mpi.core</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="mpi.html"><font color="#ffffff">mpi</font></a>.core</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/steder/Projects/mikempi/mpi/core.py">/home/steder/Projects/mikempi/mpi/core.py</a></font></td></tr></table>
+    <p><tt>core.py<br>
+&nbsp;<br>
+Defines&nbsp;'core'&nbsp;functions.&nbsp;&nbsp;These&nbsp;functions&nbsp;are&nbsp;just&nbsp;simple&nbsp;wrappers<br>
+around&nbsp;the&nbsp;C&nbsp;Extension&nbsp;functions&nbsp;contained&nbsp;in&nbsp;'_mpi.so'.<br>
+&nbsp;<br>
+These&nbsp;functions&nbsp;attempt&nbsp;to&nbsp;deal&nbsp;with&nbsp;the&nbsp;user&nbsp;calling&nbsp;them<br>
+before&nbsp;calling&nbsp;MPI_Init&nbsp;with&nbsp;a&nbsp;quick&nbsp;check.&nbsp;&nbsp;Each&nbsp;of&nbsp;these<br>
+functions&nbsp;calls&nbsp;MPI_Initialized&nbsp;and&nbsp;throws&nbsp;an&nbsp;Exception<br>
+if&nbsp;MPI_Init&nbsp;has&nbsp;not&nbsp;been&nbsp;called.&nbsp;&nbsp;This&nbsp;is&nbsp;preferable&nbsp;to&nbsp;an<br>
+interpreter&nbsp;crash&nbsp;(the&nbsp;alternative&nbsp;thanks&nbsp;to&nbsp;MPI&nbsp;error&nbsp;handling).<br>
+&nbsp;<br>
+Mike&nbsp;Steder<br>
+University&nbsp;of&nbsp;Chicago<br>
+2005</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#fffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="mpi._mpi.html">mpi._mpi</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-allreduce"><strong>allreduce</strong></a>(send_buff, count, datatype, op, comm)</dt><dd><tt>result&nbsp;=&nbsp;<a href="#-allreduce">allreduce</a>(&nbsp;send_buff,&nbsp;count,&nbsp;datatype,&nbsp;op,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;sum&nbsp;=&nbsp;<a href="#-allreduce">allreduce</a>(&nbsp;partial_result,&nbsp;1,&nbsp;MPI_INT,&nbsp;MPI_SUM,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+&nbsp;<br>
+'sum'&nbsp;on&nbsp;all&nbsp;processors&nbsp;of&nbsp;MPI_COMM_WORLD&nbsp;will&nbsp;contain&nbsp;the&nbsp;sum<br>
+of&nbsp;all&nbsp;the&nbsp;'partial_results'&nbsp;of&nbsp;all&nbsp;the&nbsp;processors&nbsp;in&nbsp;MPI_COMM_WORLD.</tt></dd></dl>
+ <dl><dt><a name="-alltoall"><strong>alltoall</strong></a>(**args)</dt></dl>
+ <dl><dt><a name="-alltoallv"><strong>alltoallv</strong></a>(**args)</dt></dl>
+ <dl><dt><a name="-barrier"><strong>barrier</strong></a>(comm)</dt><dd><tt>error_code&nbsp;=&nbsp;<a href="#-barrier">barrier</a>(&nbsp;mycomm&nbsp;)<br>
+&nbsp;<br>
+Causes&nbsp;all&nbsp;processors&nbsp;in&nbsp;'mycomm'<br>
+to&nbsp;synchronize&nbsp;at&nbsp;the&nbsp;call&nbsp;to&nbsp;'barrier'&nbsp;before&nbsp;proceeding.<br>
+&nbsp;<br>
+Barrier&nbsp;is&nbsp;normally&nbsp;used&nbsp;to&nbsp;ensure&nbsp;synchronization&nbsp;between<br>
+processors.</tt></dd></dl>
+ <dl><dt><a name="-bcast"><strong>bcast</strong></a>(input, count, datatype, source, comm)</dt><dd><tt>answer&nbsp;=&nbsp;<a href="#-bcast">bcast</a>(&nbsp;42,&nbsp;1,&nbsp;MPI_INT,&nbsp;0,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+&nbsp;<br>
+This&nbsp;sends&nbsp;'count'&nbsp;numbers&nbsp;(in&nbsp;this&nbsp;case&nbsp;just&nbsp;42)&nbsp;from&nbsp;'source'<br>
+to&nbsp;every&nbsp;other&nbsp;processor&nbsp;in&nbsp;'comm'.</tt></dd></dl>
+ <dl><dt><a name="-comm_create"><strong>comm_create</strong></a>(comm, group)</dt><dd><tt>newcomm&nbsp;=&nbsp;<a href="#-comm_create">comm_create</a>(&nbsp;comm,&nbsp;group&nbsp;)<br>
+&nbsp;<br>
+Creates&nbsp;a&nbsp;new&nbsp;communicator&nbsp;from&nbsp;a&nbsp;current&nbsp;communicator&nbsp;and&nbsp;processor&nbsp;group.</tt></dd></dl>
+ <dl><dt><a name="-comm_dup"><strong>comm_dup</strong></a>(comm)</dt><dd><tt>copy_of_comm&nbsp;=&nbsp;<a href="#-comm_dup">comm_dup</a>(&nbsp;comm&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-comm_group"><strong>comm_group</strong></a>(comm)</dt><dd><tt>group&nbsp;=&nbsp;<a href="#-comm_group">comm_group</a>(&nbsp;comm&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-comm_rank"><strong>comm_rank</strong></a>(comm)</dt><dd><tt>my_rank_in_comm&nbsp;=&nbsp;mpi.<a href="#-comm_rank">comm_rank</a>(&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;rank&nbsp;of&nbsp;this&nbsp;MPI&nbsp;Processor&nbsp;in&nbsp;the&nbsp;communicator&nbsp;'comm'.</tt></dd></dl>
+ <dl><dt><a name="-comm_size"><strong>comm_size</strong></a>(comm)</dt><dd><tt>size_of_comm&nbsp;=&nbsp;mpi.<a href="#-comm_size">comm_size</a>(&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;number&nbsp;of&nbsp;MPI&nbsp;Processors&nbsp;in&nbsp;the&nbsp;communicator&nbsp;'comm'.</tt></dd></dl>
+ <dl><dt><a name="-comm_split"><strong>comm_split</strong></a>(incomm, color, key<font color="#909090">=0</font>)</dt><dd><tt>Creates&nbsp;a&nbsp;new&nbsp;communicator&nbsp;from&nbsp;all&nbsp;the&nbsp;processors&nbsp;in&nbsp;the<br>
+communicator&nbsp;'incomm'.<br>
+&nbsp;<br>
+All&nbsp;processors&nbsp;that&nbsp;call&nbsp;'comm_split'&nbsp;with&nbsp;the&nbsp;same&nbsp;'color'&nbsp;value<br>
+(an&nbsp;integer&nbsp;&gt;=&nbsp;0)&nbsp;will&nbsp;be&nbsp;placed&nbsp;in&nbsp;the&nbsp;same&nbsp;communicator.<br>
+&nbsp;<br>
+'key'&nbsp;determines&nbsp;how&nbsp;the&nbsp;new&nbsp;communicators&nbsp;are&nbsp;sorted.&nbsp;&nbsp;Unless<br>
+you&nbsp;know&nbsp;you&nbsp;need&nbsp;to&nbsp;change&nbsp;this&nbsp;value&nbsp;the&nbsp;default&nbsp;should&nbsp;be&nbsp;fine.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;evenodd_comm&nbsp;=&nbsp;<a href="#-comm_split">comm_split</a>(&nbsp;MPI_COMM_WORLD,&nbsp;myrank&nbsp;%&nbsp;2&nbsp;)<br>
+&nbsp;<br>
+This&nbsp;divides&nbsp;all&nbsp;your&nbsp;processors&nbsp;into&nbsp;'even'&nbsp;and&nbsp;'odd'&nbsp;processors<br>
+depending&nbsp;on&nbsp;their&nbsp;rank&nbsp;and&nbsp;places&nbsp;them&nbsp;into&nbsp;seperate<br>
+'even'&nbsp;and&nbsp;'odd'&nbsp;communicators.</tt></dd></dl>
+ <dl><dt><a name="-error"><strong>error</strong></a>()</dt><dd><tt>ierr&nbsp;=&nbsp;<a href="#-error">error</a>()<br>
+&nbsp;<br>
+Returns&nbsp;most&nbsp;recent&nbsp;MPI&nbsp;calls&nbsp;return&nbsp;value/error&nbsp;code.</tt></dd></dl>
+ <dl><dt><a name="-finalize"><strong>finalize</strong></a>()</dt><dd><tt>mpi.<a href="#-finalize">finalize</a>()&nbsp;#&nbsp;shutdown&nbsp;MPI<br>
+&nbsp;<br>
+You&nbsp;should&nbsp;either&nbsp;call&nbsp;this&nbsp;function&nbsp;when&nbsp;you&nbsp;are&nbsp;done&nbsp;making<br>
+MPI&nbsp;calls&nbsp;or&nbsp;before&nbsp;your&nbsp;program&nbsp;exits.</tt></dd></dl>
+ <dl><dt><a name="-gather"><strong>gather</strong></a>(sendbuffer, sendcount, sendtype, recvcount, recvtype, root, comm)</dt><dd><tt>receive_buffer&nbsp;=&nbsp;<a href="#-gather">gather</a>(&nbsp;sendbuffer,&nbsp;sendcount,&nbsp;sendtype,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;recvcount,&nbsp;&nbsp;recvtype,&nbsp;root,&nbsp;comm)</tt></dd></dl>
+ <dl><dt><a name="-gatherv"><strong>gatherv</strong></a>(sendbuffer, sendcount, sendtype, recvcount, displacements, recvtype, root, comm)</dt><dd><tt>receive_buffer&nbsp;=&nbsp;<a href="#-gather">gather</a>(&nbsp;sendbuffer,&nbsp;sendcount,&nbsp;sendtype,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;recvcount,&nbsp;displacements,&nbsp;recvtype,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root,&nbsp;comm)<br>
+&nbsp;<br>
+Gatherv&nbsp;is&nbsp;a&nbsp;special&nbsp;case&nbsp;of&nbsp;gather&nbsp;that&nbsp;allows&nbsp;you&nbsp;to&nbsp;specify<br>
+how&nbsp;the&nbsp;data&nbsp;is&nbsp;distributed&nbsp;by&nbsp;passing&nbsp;a&nbsp;displacements&nbsp;array.</tt></dd></dl>
+ <dl><dt><a name="-get_count"><strong>get_count</strong></a>(datatype)</dt><dd><tt>count&nbsp;=&nbsp;<a href="#-get_count">get_count</a>(&nbsp;datatype&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-group_incl"><strong>group_incl</strong></a>(group, n, ranks)</dt><dd><tt>group_out&nbsp;=&nbsp;<a href="#-group_incl">group_incl</a>(&nbsp;group,&nbsp;n,&nbsp;ranks&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-group_rank"><strong>group_rank</strong></a>(group)</dt><dd><tt>rank&nbsp;=&nbsp;<a href="#-group_rank">group_rank</a>(&nbsp;group,&nbsp;rank&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-init"><strong>init</strong></a>(argc<font color="#909090">=None</font>, argv<font color="#909090">=None</font>)</dt><dd><tt>myrank,&nbsp;numprocs&nbsp;=&nbsp;mpi.<a href="#-init">init</a>(&nbsp;Integer&nbsp;argc,&nbsp;List[String]&nbsp;argv&nbsp;)<br>
+&nbsp;<br>
+myrank&nbsp;=&nbsp;MPI_Rank&nbsp;of&nbsp;the&nbsp;current&nbsp;process<br>
+numprocs&nbsp;=&nbsp;The&nbsp;number&nbsp;of&nbsp;processors&nbsp;in&nbsp;mpi.MPI_COMM_WORLD<br>
+&nbsp;<br>
+Typically&nbsp;argc&nbsp;and&nbsp;argv&nbsp;are&nbsp;defined&nbsp;as:<br>
+&nbsp;&nbsp;import&nbsp;sys<br>
+&nbsp;&nbsp;argc&nbsp;=&nbsp;len(sys.argv)<br>
+&nbsp;&nbsp;argv&nbsp;=&nbsp;sys.argv</tt></dd></dl>
+ <dl><dt><a name="-initialized"><strong>initialized</strong></a>()</dt><dd><tt>init_status&nbsp;=&nbsp;mpi.<a href="#-initialized">initialized</a>()<br>
+&nbsp;<br>
+Returns&nbsp;0&nbsp;if&nbsp;MPI_Init&nbsp;has&nbsp;not&nbsp;been&nbsp;called.<br>
+Returns&nbsp;Non-Zero&nbsp;if&nbsp;MPI_Init&nbsp;has&nbsp;been&nbsp;called.<br>
+&nbsp;<br>
+if&nbsp;(&nbsp;mpi.<a href="#-initialized">initialized</a>()&nbsp;):<br>
+&nbsp;&nbsp;print&nbsp;'MPI_Init&nbsp;has&nbsp;been&nbsp;called!'</tt></dd></dl>
+ <dl><dt><a name="-iprobe"><strong>iprobe</strong></a>(source, tag, comm)</dt><dd><tt>result&nbsp;=&nbsp;<a href="#-iprobe">iprobe</a>(&nbsp;source,&nbsp;tag,&nbsp;comm&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-irecv"><strong>irecv</strong></a>(count, datatype, source, tag, comm)</dt><dd><tt>request_id,&nbsp;buffer&nbsp;=&nbsp;<a href="#-irecv">irecv</a>(&nbsp;count,&nbsp;datatype,&nbsp;source,&nbsp;tag,&nbsp;communicator&nbsp;)<br>
+&nbsp;<br>
+irecv&nbsp;and&nbsp;recv&nbsp;have&nbsp;the&nbsp;same&nbsp;argument&nbsp;list&nbsp;but&nbsp;differ&nbsp;in&nbsp;return&nbsp;values.<br>
+&nbsp;<br>
+receive&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+from&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'source'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Request_Id:&nbsp;&nbsp;This&nbsp;is&nbsp;an&nbsp;integer&nbsp;that&nbsp;provides&nbsp;a&nbsp;handle&nbsp;to&nbsp;pass<br>
+to&nbsp;the&nbsp;functions&nbsp;'test'&nbsp;and&nbsp;'wait'.&nbsp;&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Source:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;receive&nbsp;this&nbsp;message&nbsp;from.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+--------------<br>
+Example:<br>
+&nbsp;<br>
+#&nbsp;Start&nbsp;a&nbsp;recv&nbsp;for&nbsp;a&nbsp;10&nbsp;element&nbsp;array:<br>
+&gt;&gt;&gt;&nbsp;request,buffer&nbsp;=&nbsp;mpi.<a href="#-irecv">irecv</a>(&nbsp;10,&nbsp;mpi.MPI_INT,&nbsp;0,&nbsp;0,&nbsp;mpi.MPI_COMM_WORLD&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'Request&nbsp;#:&nbsp;%s'%(request)<br>
+Request&nbsp;#:&nbsp;134985008&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'buffer:&nbsp;%s'%(buffer)<br>
+buffer:&nbsp;[0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0]<br>
+&gt;&gt;&gt;&nbsp;A&nbsp;=&nbsp;Numeric.array([1,2,3,4,5,6,7,8,9,10],Numeric.Int32)<br>
+&gt;&gt;&gt;&nbsp;send_request&nbsp;=&nbsp;mpi.<a href="#-isend">isend</a>(&nbsp;A,&nbsp;10,&nbsp;mpi.MPI_INT,&nbsp;0,&nbsp;0,&nbsp;mpi.MPI_COMM_WORLD&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'Sending&nbsp;Request:&nbsp;%s'%(send_request)<br>
+Sending&nbsp;Request:&nbsp;-1409286143<br>
+&gt;&gt;&gt;&nbsp;mpi.<a href="#-wait">wait</a>(&nbsp;request&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'buffer(after&nbsp;send):&nbsp;%s'%(buffer)<br>
+buffer(after&nbsp;send):&nbsp;[&nbsp;1&nbsp;&nbsp;2&nbsp;&nbsp;3&nbsp;&nbsp;4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7&nbsp;&nbsp;8&nbsp;&nbsp;9&nbsp;10]<br>
+&nbsp;<br>
+--------------<br>
+&nbsp;<br>
+It's&nbsp;important&nbsp;to&nbsp;note&nbsp;that&nbsp;the&nbsp;initial&nbsp;value&nbsp;of&nbsp;'buffer'&nbsp;is&nbsp;essentially<br>
+undefined.&nbsp;&nbsp;The&nbsp;values&nbsp;in&nbsp;'buffer'&nbsp;can&nbsp;not&nbsp;be&nbsp;trusted&nbsp;until&nbsp;the&nbsp;irecv<br>
+operation&nbsp;is&nbsp;complete.<br>
+&nbsp;<br>
+We&nbsp;can&nbsp;either&nbsp;use&nbsp;<a href="#-test">test</a>()&nbsp;or&nbsp;<a href="#-wait">wait</a>()&nbsp;to&nbsp;determine&nbsp;that&nbsp;the&nbsp;irecv&nbsp;has<br>
+finished.<br>
+&nbsp;<br>
+The&nbsp;<a href="#-wait">wait</a>()&nbsp;call&nbsp;blocks&nbsp;while&nbsp;<a href="#-test">test</a>()&nbsp;returns&nbsp;immediately.<br>
+&nbsp;<br>
+After&nbsp;the&nbsp;call&nbsp;to&nbsp;<a href="#-wait">wait</a>()&nbsp;buffer&nbsp;is&nbsp;guaranteed&nbsp;to&nbsp;be&nbsp;set.</tt></dd></dl>
+ <dl><dt><a name="-isend"><strong>isend</strong></a>(buffer, count, datatype, destination, tag, comm)</dt><dd><tt>request&nbsp;=&nbsp;<a href="#-isend">isend</a>(buffer,&nbsp;count,&nbsp;datatype,&nbsp;destination,&nbsp;tag,&nbsp;communicator)<br>
+&nbsp;<br>
+Send&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+to&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'destination'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Destination:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;send&nbsp;this&nbsp;message&nbsp;to.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+&nbsp;<br>
+Request:&nbsp;&nbsp;Request&nbsp;is&nbsp;an&nbsp;integer&nbsp;that&nbsp;represents&nbsp;this&nbsp;nonblocking<br>
+send&nbsp;operation.&nbsp;&nbsp;You&nbsp;use&nbsp;this&nbsp;handle&nbsp;to&nbsp;check&nbsp;on&nbsp;the&nbsp;status&nbsp;of&nbsp;this<br>
+isend&nbsp;by&nbsp;calling&nbsp;functions&nbsp;like&nbsp;<a href="#-test">test</a>()&nbsp;and&nbsp;<a href="#-wait">wait</a>().<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+request&nbsp;=&nbsp;<a href="#-send">send</a>(&nbsp;Numeric.ones(10),&nbsp;10,&nbsp;MPI_INT,&nbsp;1,&nbsp;7,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+if&nbsp;(&nbsp;<a href="#-test">test</a>(&nbsp;request&nbsp;)&nbsp;):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'Send&nbsp;complete!'<br>
+&nbsp;<br>
+#&nbsp;Wait&nbsp;for&nbsp;the&nbsp;send&nbsp;to&nbsp;complete&nbsp;before&nbsp;proceeding:<br>
+<a href="#-wait">wait</a>(&nbsp;request&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-probe"><strong>probe</strong></a>(source, tag, comm)</dt><dd><tt>result&nbsp;=&nbsp;<a href="#-probe">probe</a>(&nbsp;source,&nbsp;tag,&nbsp;comm&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-recv"><strong>recv</strong></a>(count, datatype, source, tag, comm)</dt><dd><tt>buffer&nbsp;=&nbsp;<a href="#-recv">recv</a>(&nbsp;count,&nbsp;datatype,&nbsp;source,&nbsp;tag,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+receive&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+from&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'source'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Source:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;receive&nbsp;this&nbsp;message&nbsp;from.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+#&nbsp;This&nbsp;is&nbsp;the&nbsp;complement&nbsp;to&nbsp;the&nbsp;'send'&nbsp;example&nbsp;above&nbsp;<br>
+all_ones&nbsp;=&nbsp;<a href="#-recv">recv</a>(&nbsp;10,&nbsp;MPI_INT,&nbsp;0,&nbsp;7,&nbsp;MPI_COMM_WORLD&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-reduce"><strong>reduce</strong></a>(send_buff, count, datatype, op, root, comm)</dt><dd><tt>result&nbsp;=&nbsp;<a href="#-reduce">reduce</a>(&nbsp;send_buff,&nbsp;count,&nbsp;datatype,&nbsp;op,&nbsp;root,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+&nbsp;&nbsp;if&nbsp;(&nbsp;rank&nbsp;=&nbsp;0&nbsp;):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sum&nbsp;=&nbsp;<a href="#-reduce">reduce</a>(&nbsp;partial_result,&nbsp;1,&nbsp;MPI_INT,&nbsp;MPI_SUM,&nbsp;0,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+&nbsp;&nbsp;else:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#-reduce">reduce</a>(&nbsp;partial_result,&nbsp;1,&nbsp;MPI_INT,&nbsp;MPI_SUM,&nbsp;0,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+&nbsp;<br>
+'sum'&nbsp;on&nbsp;processor&nbsp;0&nbsp;of&nbsp;MPI_COMM_WORLD&nbsp;will&nbsp;contain&nbsp;the&nbsp;sum<br>
+of&nbsp;all&nbsp;the&nbsp;'partial_results'&nbsp;of&nbsp;all&nbsp;the&nbsp;processors&nbsp;in&nbsp;MPI_COMM_WORLD.</tt></dd></dl>
+ <dl><dt><a name="-scatter"><strong>scatter</strong></a>(sendbuffer, send_count, send_type, receive_count, receive_type, root, comm)</dt><dd><tt>receive_buffer&nbsp;=&nbsp;<a href="#-scatter">scatter</a>(&nbsp;sendbuffer,&nbsp;send_count,&nbsp;displacements,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;send_type,&nbsp;receive_count,&nbsp;receive_type,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Scatterv&nbsp;is&nbsp;a&nbsp;special&nbsp;case&nbsp;of&nbsp;Scatter&nbsp;that&nbsp;allows&nbsp;you&nbsp;to<br>
+specify&nbsp;displacements.<br>
+&nbsp;<br>
+displacements&nbsp;:&nbsp;an&nbsp;array&nbsp;of&nbsp;displacements&nbsp;describing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;what&nbsp;part&nbsp;of&nbsp;sendbuffer&nbsp;to&nbsp;copy&nbsp;to&nbsp;each<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processor&nbsp;in&nbsp;comm.</tt></dd></dl>
+ <dl><dt><a name="-scatterv"><strong>scatterv</strong></a>(sendbuffer, send_count, displacements, send_type, receive_count, receive_type, root, comm)</dt><dd><tt>receive_buffer&nbsp;=&nbsp;<a href="#-scatterv">scatterv</a>(&nbsp;sendbuffer,&nbsp;send_count,&nbsp;displacements,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;send_type,&nbsp;receive_count,&nbsp;receive_type,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Scatterv&nbsp;is&nbsp;a&nbsp;special&nbsp;case&nbsp;of&nbsp;Scatter&nbsp;that&nbsp;allows&nbsp;you&nbsp;to<br>
+specify&nbsp;displacements.<br>
+&nbsp;<br>
+displacements&nbsp;:&nbsp;an&nbsp;array&nbsp;of&nbsp;displacements&nbsp;describing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;what&nbsp;part&nbsp;of&nbsp;sendbuffer&nbsp;to&nbsp;copy&nbsp;to&nbsp;each<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processor&nbsp;in&nbsp;comm.</tt></dd></dl>
+ <dl><dt><a name="-send"><strong>send</strong></a>(buffer, count, datatype, destination, tag, comm)</dt><dd><tt>error_code&nbsp;=&nbsp;<a href="#-send">send</a>(&nbsp;buffer,&nbsp;count,&nbsp;datatype,&nbsp;destination,&nbsp;tag,&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Send&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+to&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'destination'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Destination:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;send&nbsp;this&nbsp;message&nbsp;to.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+ierr&nbsp;=&nbsp;<a href="#-send">send</a>(&nbsp;Numeric.ones(10),&nbsp;10,&nbsp;MPI_INT,&nbsp;1,&nbsp;7,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+if(&nbsp;ierr&nbsp;):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'unable&nbsp;to&nbsp;send&nbsp;message&nbsp;to&nbsp;node&nbsp;1'</tt></dd></dl>
+ <dl><dt><a name="-start"><strong>start</strong></a>(argc, argv)</dt><dd><tt>myrank,&nbsp;numprocs&nbsp;=&nbsp;mpi.<a href="#-start">start</a>(&nbsp;Integer&nbsp;argc,&nbsp;List[String]&nbsp;argv&nbsp;)<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;the&nbsp;LAM-MPI&nbsp;equivalent&nbsp;of&nbsp;'init'.</tt></dd></dl>
+ <dl><dt><a name="-status"><strong>status</strong></a>()</dt><dd><tt>(&nbsp;source,&nbsp;tag,&nbsp;error&nbsp;)&nbsp;=&nbsp;<a href="#-status">status</a>()<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;returns&nbsp;3&nbsp;mpi&nbsp;status&nbsp;bits&nbsp;describing&nbsp;the<br>
+source,&nbsp;tag,&nbsp;and&nbsp;error.</tt></dd></dl>
+ <dl><dt><a name="-test"><strong>test</strong></a>(request)</dt><dd><tt>ready&nbsp;=&nbsp;<a href="#-test">test</a>(&nbsp;request_id&nbsp;)<br>
+&nbsp;<br>
+if&nbsp;(&nbsp;<a href="#-test">test</a>(&nbsp;request_id&nbsp;)):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'Non-blocking&nbsp;send&nbsp;or&nbsp;receive&nbsp;operation&nbsp;is&nbsp;complete!'<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;request&nbsp;ID&nbsp;is&nbsp;no&nbsp;longer&nbsp;valid&nbsp;after&nbsp;this&nbsp;call<br>
+returns&nbsp;successfully&nbsp;and&nbsp;the&nbsp;operation&nbsp;is&nbsp;complete.</tt></dd></dl>
+ <dl><dt><a name="-wait"><strong>wait</strong></a>(request)</dt><dd><tt>request_id&nbsp;=&nbsp;<a href="#-wait">wait</a>(&nbsp;request_id&nbsp;)<br>
+&nbsp;<br>
+request_id,buffer&nbsp;=&nbsp;mpi.<a href="#-irecv">irecv</a>(&nbsp;...&nbsp;)<br>
+#&nbsp;Do&nbsp;other&nbsp;work:<br>
+#&nbsp;...<br>
+#&nbsp;wait&nbsp;for&nbsp;the&nbsp;receive&nbsp;to&nbsp;complete&nbsp;so&nbsp;I&nbsp;can&nbsp;use&nbsp;buffer:<br>
+<a href="#-wait">wait</a>(request_id)<br>
+print&nbsp;'Received:',buffer<br>
+&nbsp;<br>
+Invalid&nbsp;Request&nbsp;ID's&nbsp;(ID's&nbsp;for&nbsp;Sends/Recvs&nbsp;that&nbsp;have&nbsp;completed)<br>
+will&nbsp;cause&nbsp;a&nbsp;crash&nbsp;if&nbsp;they&nbsp;are&nbsp;passed&nbsp;directly&nbsp;to&nbsp;_mpi.mpi_wait.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>MPI_ANY_SOURCE</strong> = -2<br>
+<strong>MPI_ANY_TAG</strong> = -1<br>
+<strong>MPI_BAND</strong> = 1476395014<br>
+<strong>MPI_BOR</strong> = 1476395016<br>
+<strong>MPI_BOTTOM</strong> = 0<br>
+<strong>MPI_BSEND_OVERHEAD</strong> = 59<br>
+<strong>MPI_BXOR</strong> = 1476395018<br>
+<strong>MPI_BYTE</strong> = 1275068685<br>
+<strong>MPI_CHAR</strong> = 1275068673<br>
+<strong>MPI_COMM_NULL</strong> = 67108864<br>
+<strong>MPI_COMM_WORLD</strong> = 1140850688<br>
+<strong>MPI_DATATYPE_NULL</strong> = 201326592<br>
+<strong>MPI_DOUBLE</strong> = 1275070475<br>
+<strong>MPI_ERRHANDLER_NULL</strong> = 335544320<br>
+<strong>MPI_FLOAT</strong> = 1275069450<br>
+<strong>MPI_GROUP_NULL</strong> = 134217728<br>
+<strong>MPI_INT</strong> = 1275069445<br>
+<strong>MPI_KEYVAL_INVALID</strong> = 603979776<br>
+<strong>MPI_LAND</strong> = 1476395013<br>
+<strong>MPI_LB</strong> = 1275068432<br>
+<strong>MPI_LONG</strong> = 1275069447<br>
+<strong>MPI_LOR</strong> = 1476395015<br>
+<strong>MPI_LXOR</strong> = 1476395017<br>
+<strong>MPI_MAX</strong> = 1476395009<br>
+<strong>MPI_MAXLOC</strong> = 1476395020<br>
+<strong>MPI_MAX_ERROR_STRING</strong> = 512<br>
+<strong>MPI_MAX_PROCESSOR_NAME</strong> = 128<br>
+<strong>MPI_MIN</strong> = 1476395010<br>
+<strong>MPI_MINLOC</strong> = 1476395019<br>
+<strong>MPI_OP_NULL</strong> = 402653184<br>
+<strong>MPI_PACKED</strong> = 1275068687<br>
+<strong>MPI_PROC_NULL</strong> = -1<br>
+<strong>MPI_PROD</strong> = 1476395012<br>
+<strong>MPI_Pack</strong> = -1213765540<br>
+<strong>MPI_REQUEST_NULL</strong> = 738197504<br>
+<strong>MPI_SHORT</strong> = 1275068931<br>
+<strong>MPI_SUM</strong> = 1476395011<br>
+<strong>MPI_UB</strong> = 1275068433<br>
+<strong>MPI_UNDEFINED</strong> = -32766<br>
+<strong>MPI_Unpack</strong> = -1213544044</td></tr></table>
+</body></html>

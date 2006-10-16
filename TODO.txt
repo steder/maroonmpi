@@ -1,0 +1,42 @@
+Sticky Issues:
+* Modifiy functions to return a single integer rather then an array if Receive count is == 1.
+   Now sure how I can fix this one without breaking non-blocking send and receive.  Non-blocking
+   receives rely on the fact that the array they return can be updated just by changing the pointer.
+   
+   If I return a single element it will be returned as a copy.  That copy will not get updated when 
+   the original reference is updated.
+
+* Retain shape of arrays!
+
+   Arrays currently don't pass their shape along with them.  The receiver doesn't know 
+  what shape the array original was so it simply returns the array flattened (1D).  I don't believe
+  calling reshape is the end of the world, but it's not pretty either.
+
+   The problem is this:  I don't see how to send more information (or just pickle the numeric array
+   and send it directly) without breaking send and receive between C and Fortran.
+
+   I think the simple solution might be an extra call send/recv pair before the send/recv of the 
+   array that sends the arrays shape (as a 1D array).  Then the receiver will be able to reshape
+   the received data properly.  This could all be handled transparently at the python level.
+   mpi.send( ... , saveshape = True):
+      if( buffer is a 2D+ array ):
+         _mpi.send( shape of buffer... )
+         _mpi.send( buffer ... )
+      else:
+          _mpi.send( buffer )
+
+    We could also have an optional argument, saveshape (or something), that would determine
+    whether this extra send/recv would happen or not.  This way, code that has to interface with
+    C or Fortran could simply set "saveshape = False" or always use 1D arrays.
+
+    ...  Maybe "saveshape=False" should be the default...
+
+Fix / Test Collective Operations (MAX_LOC, MIN_LOC), and Non-blocking Collective Methods
+
+Finish defining docstrings. 
+  * Make the docstrings clearer and more consistent stylisticly with each other.
+
+Add more test functions and examples.    
+  * Unit Testing?
+
+Add the rest of the MPI functions

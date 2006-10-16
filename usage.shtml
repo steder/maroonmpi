@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
+    <title>MMPI: Using MMPI</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>Using MMPI</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="index.shtml">Home</a><br />
+        <a href="features.shtml">Features</a><br />
+        <a href="docs/">Documentation</a><br /> 
+        <a href="install.shtml">Installation</a><br />
+        <a href="examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+      </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+      <h2>Running MPI Programs</h2>
+      <h3>Using MPICH1</h3>
+      <P>I currently don't use or support MPICH1.  According to the MPICH
+        developers MPICH2 is backwards compatible and mature enough for 
+        serious use.  As MPICH2 is also very easy to use and has a number
+        of nice features, I would seriously recommend using MPICH2.  
+      </P>
+      <p>However, if you have success with MMPI on MPICH1 and would like to 
+        share how you setup your system send me an e-mail.  I would be more
+        then willing to post some directions here for people who must use
+        MPICH1.
+        </p>
+      <p>If you're trying to get MMPI running on MPICH1 or another unsupported
+        MPI Implementation please feel free to ask me questions.  I don't 
+        guarantee I can help but I am interested in getting MMPI running 
+        on as many platforms as possible.
+      </p>
+      <h3>Using MPICH2</h3>
+      <h4>Starting MPD</h4>
+      <p>MPD is a service (unix people might be more familiar with daemons),
+        that must be running to start parallel jobs using mpirun or mpiexec
+        on MPICH2.  
+      </p>
+      <p>Depending on your system you may have MPD already running.  You 
+        can check to see if there is an MPD running by running the following
+        programs:</p>
+      <div id="code"><pre><code>
+$ mpdtrace
+      </code></pre></div>
+      <p>If the above command works it should print a list of hostnames(one per line).</p>
+      <p>If instead of a list of hostnames you see the following:</p>
+      <div id="code"><pre><code>
+sakura:~/Projects/mikempi steder$ mpdtrace
+mpdtrace: cannot connect to local mpd (/tmp/mpd2.console_steder); possible causes:
+  1. no mpd is running on this host
+  2. an mpd is running but was started without a "console" (-n option)      
+      </code></pre></div>
+      <p>Then you will need to start MPD yourself.</p>
+      <p>Before we can start MPD as a user we should make sure that you have 
+        an mpd configuration file in your home directory.  On my home machine
+        ~steder/.mpd.conf consists of a single line:</p>
+      <div id="code"><pre><code>
+MPD_SECRETWORD=hello
+      </code></pre></div>
+      <p>You should probably use a different secret word then "hello" most likely.  </p>
+      <p>At this point you are ready to start MPD:</p>
+      <div id="code"><pre><code>
+$ mpdboot --totalnum=4 --file=machinefile.txt --rsh=rsh --user=steder
+      </code></pre></div>
+      <p>The above command is fairly common.  It says that you are setting up
+        an MPD service that will use 4 machines (the first 4 hostnames listed
+        in machinefile.txt (one hostname per line)) and log into them using
+        the systems "rsh" command (it's common to substitute "ssh" for "rsh").
+        Additionally it should connect as the user "steder".</p>
+      <p>There are many more options available to mpdboot.</p>
+      <p>NOTE:  The above seems a bit complicated, and it is for a simple test.
+        However, for simple cases you can simply use "mpdboot" without 
+        any arguments to test that your MPI environment and MMPI are working.</p>
+      <h4>Using mpiexec</h4>
+      <p>mpiexec is the MPICH2 replacement for mpirun.  Many of the options
+        to mpiexec are the same as the mpirun options, although there are a 
+        few additions and new features.</p>
+      <p>Assuming you have a running MPD, executing a MMPI program is
+        quite simple.</p>
+      <p>The following is a minimal MMPI program.</p>
+      <div id="code"><pre><code>
+#!/usr/bin/env python
+#file:  hello.py
+import sys,mpi
+rank, numprocs = mpi.init(len(sys.argv),sys.argv)
+print "Hello World from Processor %s of %s!"%( rank+1, numprocs )
+mpi.finalize()
+      </code></pre></div>
+      <p>You can run the above program on <em>N</em> processors using
+        the following command</p>
+      <div id="terminal"><pre><code>
+$ mpiexec -l -n N /usr/bin/python2.4 /home/steder/hello.py
+      </code></pre></div>
+      <p>Of course you should fill in the appropriate paths instead of
+        /usr/bin and /home/steder (or include those files and paths in 
+        your PATH.</p>
+      <p>After running the above command you should see the following output</p>
+      <div id="terminal"><pre><code>
+Hello World from Processor 1 of N!
+Hello World from Processor 2 of N!
+...
+Hello World from Processor N of N!
+      </code></pre></div>
+      <h4>Shutting down MPD</h4>
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>

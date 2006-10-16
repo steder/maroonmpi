@@ -1,0 +1,169 @@
+
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module mpi.request</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="mpi.html"><font color="#ffffff">mpi</font></a>.request</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/steder/Projects/mikempi/mpi/request.py">/home/steder/Projects/mikempi/mpi/request.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#fffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="mpi._mpi.html">mpi._mpi</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="mpi.request.html#Request">Request</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Request">class <strong>Request</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Request">Request</a>&nbsp;objects&nbsp;encapsulate&nbsp;request&nbsp;ID's&nbsp;along&nbsp;with&nbsp;the<br>
+buffers&nbsp;they&nbsp;are&nbsp;associated&nbsp;with&nbsp;and&nbsp;the&nbsp;count,&nbsp;type,&nbsp;source<br>
+tag,&nbsp;and&nbsp;comm&nbsp;information.<br>
+&nbsp;<br>
+This&nbsp;allows&nbsp;the&nbsp;user&nbsp;to&nbsp;examine&nbsp;the&nbsp;types&nbsp;of&nbsp;pending(and&nbsp;completed)<br>
+requests&nbsp;they&nbsp;have&nbsp;going&nbsp;on.&nbsp;&nbsp;Also,&nbsp;these&nbsp;objects&nbsp;can&nbsp;and&nbsp;will&nbsp;check<br>
+their&nbsp;own&nbsp;state.&nbsp;&nbsp;You&nbsp;can&nbsp;determine&nbsp;the&nbsp;status&nbsp;and&nbsp;even&nbsp;get&nbsp;the&nbsp;data<br>
+by&nbsp;simply&nbsp;calling&nbsp;the&nbsp;appropriate&nbsp;method&nbsp;on&nbsp;the&nbsp;request&nbsp;object.<br>
+&nbsp;<br>
+Important&nbsp;methods&nbsp;are:<br>
+&nbsp;<br>
+&nbsp;&nbsp;<a href="#Request-test">test</a>()&nbsp;-&nbsp;returns&nbsp;true&nbsp;(the&nbsp;send/recv&nbsp;has&nbsp;completed)&nbsp;or&nbsp;false.<br>
+&nbsp;&nbsp;<a href="#Request-wait">wait</a>()&nbsp;-&nbsp;does&nbsp;not&nbsp;return&nbsp;until&nbsp;the&nbsp;data&nbsp;is&nbsp;available.<br>
+&nbsp;&nbsp;status()&nbsp;-&nbsp;prints&nbsp;a&nbsp;description&nbsp;of&nbsp;this&nbsp;request&nbsp;and&nbsp;tests&nbsp;to&nbsp;see&nbsp;if&nbsp;it&nbsp;is&nbsp;complete.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Request-__init__"><strong>__init__</strong></a>(self, type, id, buffer, count, datatype, source_or_destination, tag, comm)</dt><dd><tt>Creates&nbsp;a&nbsp;request&nbsp;object.&nbsp;&nbsp;This&nbsp;is&nbsp;used&nbsp;internally&nbsp;by&nbsp;the&nbsp;MPI<br>
+module.&nbsp;&nbsp;You&nbsp;should&nbsp;never&nbsp;have&nbsp;to&nbsp;manually&nbsp;create&nbsp;a&nbsp;request&nbsp;object.<br>
+&nbsp;<br>
+my_request&nbsp;=&nbsp;<a href="#Request">Request</a>(&nbsp;type('send'&nbsp;or&nbsp;'recv'),&nbsp;request_id,&nbsp;buffer,&nbsp;count,&nbsp;type,&nbsp;source_or_destination,&nbsp;tag,&nbsp;comm&nbsp;)</tt></dd></dl>
+
+<dl><dt><a name="Request-__int__"><strong>__int__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Request-test"><strong>test</strong></a>(self)</dt><dd><tt>ready&nbsp;=&nbsp;request.<a href="#Request-test">test</a>()<br>
+&nbsp;<br>
+if&nbsp;(&nbsp;request.<a href="#Request-test">test</a>()&nbsp;):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'Nonblocking&nbsp;Send/Recv&nbsp;Operation&nbsp;completed!'</tt></dd></dl>
+
+<dl><dt><a name="Request-wait"><strong>wait</strong></a>(self)</dt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-irecv"><strong>irecv</strong></a>(count, datatype, source, tag, comm)</dt><dd><tt>request_id,&nbsp;buffer&nbsp;=&nbsp;<a href="#-irecv">irecv</a>(&nbsp;count,&nbsp;datatype,&nbsp;source,&nbsp;tag,&nbsp;communicator&nbsp;)<br>
+&nbsp;<br>
+irecv&nbsp;and&nbsp;recv&nbsp;have&nbsp;the&nbsp;same&nbsp;argument&nbsp;list&nbsp;but&nbsp;differ&nbsp;in&nbsp;return&nbsp;values.<br>
+&nbsp;<br>
+receive&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+from&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'source'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Request_Id:&nbsp;&nbsp;This&nbsp;is&nbsp;an&nbsp;integer&nbsp;that&nbsp;provides&nbsp;a&nbsp;handle&nbsp;to&nbsp;pass<br>
+to&nbsp;the&nbsp;functions&nbsp;'test'&nbsp;and&nbsp;'wait'.&nbsp;&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Source:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;receive&nbsp;this&nbsp;message&nbsp;from.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+--------------<br>
+Example:<br>
+&nbsp;<br>
+#&nbsp;Start&nbsp;a&nbsp;recv&nbsp;for&nbsp;a&nbsp;10&nbsp;element&nbsp;array:<br>
+&gt;&gt;&gt;&nbsp;request,buffer&nbsp;=&nbsp;mpi.<a href="#-irecv">irecv</a>(&nbsp;10,&nbsp;mpi.MPI_INT,&nbsp;0,&nbsp;0,&nbsp;mpi.MPI_COMM_WORLD&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'<a href="#Request">Request</a>&nbsp;#:&nbsp;%s'%(request)<br>
+<a href="#Request">Request</a>&nbsp;#:&nbsp;134985008&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'buffer:&nbsp;%s'%(buffer)<br>
+buffer:&nbsp;[0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0&nbsp;0]<br>
+&gt;&gt;&gt;&nbsp;A&nbsp;=&nbsp;Numeric.array([1,2,3,4,5,6,7,8,9,10],Numeric.Int32)<br>
+&gt;&gt;&gt;&nbsp;send_request&nbsp;=&nbsp;mpi.<a href="#-isend">isend</a>(&nbsp;A,&nbsp;10,&nbsp;mpi.MPI_INT,&nbsp;0,&nbsp;0,&nbsp;mpi.MPI_COMM_WORLD&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'Sending&nbsp;<a href="#Request">Request</a>:&nbsp;%s'%(send_request)<br>
+Sending&nbsp;<a href="#Request">Request</a>:&nbsp;-1409286143<br>
+&gt;&gt;&gt;&nbsp;mpi.<a href="#-wait">wait</a>(&nbsp;request&nbsp;)<br>
+&gt;&gt;&gt;&nbsp;print&nbsp;'buffer(after&nbsp;send):&nbsp;%s'%(buffer)<br>
+buffer(after&nbsp;send):&nbsp;[&nbsp;1&nbsp;&nbsp;2&nbsp;&nbsp;3&nbsp;&nbsp;4&nbsp;&nbsp;5&nbsp;&nbsp;6&nbsp;&nbsp;7&nbsp;&nbsp;8&nbsp;&nbsp;9&nbsp;10]<br>
+&nbsp;<br>
+--------------<br>
+&nbsp;<br>
+It's&nbsp;important&nbsp;to&nbsp;note&nbsp;that&nbsp;the&nbsp;initial&nbsp;value&nbsp;of&nbsp;'buffer'&nbsp;is&nbsp;essentially<br>
+undefined.&nbsp;&nbsp;The&nbsp;values&nbsp;in&nbsp;'buffer'&nbsp;can&nbsp;not&nbsp;be&nbsp;trusted&nbsp;until&nbsp;the&nbsp;irecv<br>
+operation&nbsp;is&nbsp;complete.<br>
+&nbsp;<br>
+We&nbsp;can&nbsp;either&nbsp;use&nbsp;<a href="#-test">test</a>()&nbsp;or&nbsp;<a href="#-wait">wait</a>()&nbsp;to&nbsp;determine&nbsp;that&nbsp;the&nbsp;irecv&nbsp;has<br>
+finished.<br>
+&nbsp;<br>
+The&nbsp;<a href="#-wait">wait</a>()&nbsp;call&nbsp;blocks&nbsp;while&nbsp;<a href="#-test">test</a>()&nbsp;returns&nbsp;immediately.<br>
+&nbsp;<br>
+After&nbsp;the&nbsp;call&nbsp;to&nbsp;<a href="#-wait">wait</a>()&nbsp;buffer&nbsp;is&nbsp;guaranteed&nbsp;to&nbsp;be&nbsp;set.</tt></dd></dl>
+ <dl><dt><a name="-isend"><strong>isend</strong></a>(buffer, count, datatype, destination, tag, comm)</dt><dd><tt>request&nbsp;=&nbsp;<a href="#-isend">isend</a>(buffer,&nbsp;count,&nbsp;datatype,&nbsp;destination,&nbsp;tag,&nbsp;communicator)<br>
+&nbsp;<br>
+Send&nbsp;'buffer',&nbsp;which&nbsp;consists&nbsp;of&nbsp;'count'&nbsp;elements&nbsp;of&nbsp;type&nbsp;'datatype',<br>
+to&nbsp;the&nbsp;processor&nbsp;in&nbsp;'comm'&nbsp;that&nbsp;has&nbsp;rank&nbsp;'destination'&nbsp;and&nbsp;is&nbsp;waiting<br>
+for&nbsp;a&nbsp;message&nbsp;with&nbsp;tag&nbsp;==&nbsp;'tag'.<br>
+&nbsp;<br>
+Buffer:&nbsp;&nbsp;Can&nbsp;be&nbsp;a&nbsp;single&nbsp;numeric&nbsp;value&nbsp;or&nbsp;a&nbsp;numeric&nbsp;array.<br>
+Count:&nbsp;&nbsp;Number&nbsp;of&nbsp;elements&nbsp;in&nbsp;an&nbsp;array,&nbsp;or&nbsp;1&nbsp;for&nbsp;scalar&nbsp;data.<br>
+Datatype:&nbsp;&nbsp;One&nbsp;of&nbsp;a&nbsp;few&nbsp;type&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;mpi&nbsp;module.<br>
+Destination:&nbsp;&nbsp;Rank&nbsp;in&nbsp;the&nbsp;specified&nbsp;communicator&nbsp;to&nbsp;send&nbsp;this&nbsp;message&nbsp;to.<br>
+Tag:&nbsp;&nbsp;An&nbsp;arbitrary&nbsp;value&nbsp;used&nbsp;to&nbsp;route&nbsp;messages&nbsp;more&nbsp;precisely.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tags&nbsp;are&nbsp;often&nbsp;ignored&nbsp;(especially&nbsp;in&nbsp;simpler&nbsp;programs).&nbsp;&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;don't&nbsp;care&nbsp;what&nbsp;the&nbsp;tag&nbsp;is&nbsp;use:&nbsp;&nbsp;MPI_ANY_TAG<br>
+Comm:&nbsp;&nbsp;The&nbsp;communicator&nbsp;that&nbsp;contains&nbsp;'destination'<br>
+&nbsp;<br>
+<a href="#Request">Request</a>:&nbsp;&nbsp;<a href="#Request">Request</a>&nbsp;is&nbsp;an&nbsp;integer&nbsp;that&nbsp;represents&nbsp;this&nbsp;nonblocking<br>
+send&nbsp;operation.&nbsp;&nbsp;You&nbsp;use&nbsp;this&nbsp;handle&nbsp;to&nbsp;check&nbsp;on&nbsp;the&nbsp;status&nbsp;of&nbsp;this<br>
+isend&nbsp;by&nbsp;calling&nbsp;functions&nbsp;like&nbsp;<a href="#-test">test</a>()&nbsp;and&nbsp;<a href="#-wait">wait</a>().<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+request&nbsp;=&nbsp;send(&nbsp;Numeric.ones(10),&nbsp;10,&nbsp;MPI_INT,&nbsp;1,&nbsp;7,&nbsp;MPI_COMM_WORLD&nbsp;)<br>
+if&nbsp;(&nbsp;<a href="#-test">test</a>(&nbsp;request&nbsp;)&nbsp;):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'Send&nbsp;complete!'<br>
+&nbsp;<br>
+#&nbsp;Wait&nbsp;for&nbsp;the&nbsp;send&nbsp;to&nbsp;complete&nbsp;before&nbsp;proceeding:<br>
+<a href="#-wait">wait</a>(&nbsp;request&nbsp;)</tt></dd></dl>
+ <dl><dt><a name="-test"><strong>test</strong></a>(request)</dt><dd><tt>ready&nbsp;=&nbsp;<a href="#-test">test</a>(&nbsp;request&nbsp;)<br>
+&nbsp;<br>
+if&nbsp;(&nbsp;<a href="#-test">test</a>(&nbsp;request&nbsp;)):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;'Non-blocking&nbsp;send&nbsp;or&nbsp;receive&nbsp;operation&nbsp;is&nbsp;complete!'<br>
+&nbsp;<br>
+Note&nbsp;that&nbsp;the&nbsp;request&nbsp;object&nbsp;is&nbsp;no&nbsp;longer&nbsp;valid&nbsp;after&nbsp;this&nbsp;call<br>
+returns&nbsp;successfully&nbsp;and&nbsp;the&nbsp;operation&nbsp;is&nbsp;complete.</tt></dd></dl>
+ <dl><dt><a name="-wait"><strong>wait</strong></a>(request)</dt><dd><tt>result&nbsp;=&nbsp;<a href="#-wait">wait</a>(&nbsp;mpi_request&nbsp;)<br>
+&nbsp;<br>
+request,buffer&nbsp;=&nbsp;mpi.<a href="#-irecv">irecv</a>(&nbsp;...&nbsp;)<br>
+#&nbsp;Do&nbsp;other&nbsp;work:<br>
+#&nbsp;...<br>
+#&nbsp;wait&nbsp;for&nbsp;the&nbsp;receive&nbsp;to&nbsp;complete&nbsp;so&nbsp;I&nbsp;can&nbsp;use&nbsp;buffer:<br>
+<a href="#-wait">wait</a>(request)<br>
+print&nbsp;'Received:',buffer</tt></dd></dl>
+</td></tr></table>
+</body></html>

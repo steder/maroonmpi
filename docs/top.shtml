@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="../style.css" type="text/css" media="screen" />
+    <title>MMPI: Documentation</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>MMPI Documentation</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="../index.shtml">Home</a><br />
+        <a href="../features.shtml">Features</a><br />
+        <a href="index.shtml">Documentation</a><br /> 
+        <a href="../install.shtml">Installation</a><br />
+        <a href="../examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+      </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+      <h3 class="c6">Documentation Overview:</h3>
+      <p>The MMPI module is really a Python package. When you import this
+        package, several sub modules are really imported behind the scenes.
+        Currently there are 3 main sub-modules that makeup the MMPI
+        module.</p>
+      <p><b>mpi.core</b> defines all the basic MPI functionality, while
+        <b>mpi.request</b> and <b>mpi.communicator</b> define objects to
+        provide more powerful<i>(and advanced)</i> concepts like mpi
+        requests and communicators. For instance, <b>mpi.core</b> provides
+        a isend method. <b>mpi.request</b> overwrites that isend method
+        with it's own that uses request objects.</p>
+      <p>In this way, the most basic functionality is available to users
+        that want to deal with a very low level MPI implementation, or
+        develop their own high level MPI implementation. A higher level
+        implementation is made available by overwriting key pieces as i've
+        described above. The goal is to make the default behavior of MMPI
+        Pythonic <i>(predictable, easy to use, "one way to do it")</i>
+        while still making more behaviors available.</p>
+      <p>Users who simply want the default behavior should use functions
+        in the main 'mpi' namespace. For example:</p>
+      <div id="code">
+        <pre>
+          <code>
+            import mpi
+            mpi.init()
+            mpi.isend( ... )
+          </code>
+        </pre>
+      </div>
+      Users that know specifically what they want to access can use the
+      sub-modules to do so. For example, a user who would like to call
+      the Python-C extension functions directly (there's no error
+      checking at this level, but it's arguably more efficient/faster)
+      you could:
+      <div id="code">
+        <pre>
+          <code>
+            import sys
+            import mpi
+            import mpi._mpi
+            mpi._mpi.init( len(sys.argv), sys.argv )
+            mpi._mpi.isend( ... )
+          </code>
+        </pre>
+      </div>
+      <ul>
+        <li>mpi.core
+          <p><b>mpi.core</b> is a very light wrapper around the Python-C
+            Extension <b>mpi._mpi</b>. This wrapper provides just some simple
+            error checks to verify that no MPI calls are made before
+            <b>init</b> has been called.</p>
+        </li>
+        <li>mpi.request
+          <p><b>mpi.request</b> defines a Request object and defines new
+            versions of all Non-blocking operations that will return Request
+            objects instead of integer handles. Manipulation Request objects in
+            Python is less error prone and, in my opinion, easier to work
+            with.</p>
+        </li>
+        <li>mpi.communicator
+          <p><b>mpi.communicator</b> defines a Communicator object and
+            defines new versions of all the "comm" functions that will now
+            return Communicator objects instead of integer handles.
+            Manipulation of Communicatior objects in Python is less error prone
+            and, in my opinion, easier to work with.</p>
+        </li>
+      </ul>
+      <h3>epydoc generated documentation</h3>
+      <P>
+        View the automatically generated <a href="epydoc/"> MMPI documentation </a>.
+      </P>
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>

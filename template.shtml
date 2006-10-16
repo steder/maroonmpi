@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
+    <title>MMPI: Mmmm PI!</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>MMPI</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="index.shtml">Home</a><br />
+        <a href="features.shtml">Features</a><br />
+        <a href="docs/">Documentation</a><br /> 
+        <a href="install.shtml">Installation</a><br />
+        <a href="examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+      </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>

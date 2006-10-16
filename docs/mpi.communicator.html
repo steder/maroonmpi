@@ -1,0 +1,90 @@
+
+<!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module mpi.communicator</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="mpi.html"><font color="#ffffff">mpi</font></a>.communicator</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/steder/Projects/mikempi/mpi/communicator.py">/home/steder/Projects/mikempi/mpi/communicator.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#fffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="mpi.core.html">mpi.core</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="mpi.communicator.html#Communicator">Communicator</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Communicator">class <strong>Communicator</strong></a></font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Communicator-__init__"><strong>__init__</strong></a>(self, id)</dt><dd><tt><a href="#Communicator">Communicator</a>&nbsp;objects&nbsp;encapsulate&nbsp;integer&nbsp;communicator&nbsp;handles</tt></dd></dl>
+
+<dl><dt><a name="Communicator-__int__"><strong>__int__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Communicator-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Communicator-__str__"><strong>__str__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Communicator-create"><strong>create</strong></a>(self, processor_list)</dt><dd><tt>new_comm&nbsp;=&nbsp;<a href="#-comm_create">comm_create</a>(comm,&nbsp;processor_list)<br>
+&nbsp;<br>
+processor_list:&nbsp;simple&nbsp;python&nbsp;list&nbsp;specifying&nbsp;all&nbsp;the&nbsp;processors<br>
+to&nbsp;put&nbsp;into&nbsp;the&nbsp;new&nbsp;communicator.</tt></dd></dl>
+
+<dl><dt><a name="Communicator-dup"><strong>dup</strong></a>(self)</dt><dd><tt>new_comm&nbsp;=&nbsp;old_comm.<a href="#Communicator-dup">dup</a>(&nbsp;)<br>
+&nbsp;<br>
+Simply&nbsp;makes&nbsp;a&nbsp;copy&nbsp;(dup-&gt;duplicate)&nbsp;of&nbsp;comm.</tt></dd></dl>
+
+<dl><dt><a name="Communicator-rank"><strong>rank</strong></a>(self)</dt><dd><tt>rank&nbsp;=&nbsp;comm.<a href="#Communicator-rank">rank</a>()<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;rank&nbsp;(processor&nbsp;ID)&nbsp;of&nbsp;the&nbsp;calling&nbsp;processor.</tt></dd></dl>
+
+<dl><dt><a name="Communicator-size"><strong>size</strong></a>(self)</dt><dd><tt>size&nbsp;=&nbsp;comm.<a href="#Communicator-size">size</a>()<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;communicator</tt></dd></dl>
+
+<dl><dt><a name="Communicator-split"><strong>split</strong></a>(self, color, key<font color="#909090">=0</font>)</dt><dd><tt>new_comm&nbsp;=&nbsp;<a href="#-comm_split">comm_split</a>(&nbsp;comm,&nbsp;color,&nbsp;key&nbsp;)<br>
+&nbsp;<br>
+color:&nbsp;&nbsp;all&nbsp;processors&nbsp;that&nbsp;call&nbsp;comm_split&nbsp;with&nbsp;the&nbsp;same&nbsp;color&nbsp;will&nbsp;be&nbsp;put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;the&nbsp;same&nbsp;communicator.<br>
+key:&nbsp;&nbsp;determines&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;processors&nbsp;in&nbsp;the&nbsp;new&nbsp;communicator</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-comm_create"><strong>comm_create</strong></a>(comm, processor_list)</dt><dd><tt>new_comm&nbsp;=&nbsp;<a href="#-comm_create">comm_create</a>(comm,&nbsp;processor_list)<br>
+&nbsp;<br>
+processor_list:&nbsp;simple&nbsp;python&nbsp;list&nbsp;specifying&nbsp;all&nbsp;the&nbsp;processors<br>
+to&nbsp;put&nbsp;into&nbsp;the&nbsp;new&nbsp;communicator.</tt></dd></dl>
+ <dl><dt><a name="-comm_dup"><strong>comm_dup</strong></a>(comm)</dt><dd><tt>new_comm&nbsp;=&nbsp;<a href="#-comm_dup">comm_dup</a>(&nbsp;comm&nbsp;)<br>
+&nbsp;<br>
+Simply&nbsp;makes&nbsp;a&nbsp;copy&nbsp;of&nbsp;comm.</tt></dd></dl>
+ <dl><dt><a name="-comm_split"><strong>comm_split</strong></a>(comm, color, key<font color="#909090">=0</font>)</dt><dd><tt>new_comm&nbsp;=&nbsp;<a href="#-comm_split">comm_split</a>(&nbsp;comm,&nbsp;color,&nbsp;key&nbsp;)<br>
+&nbsp;<br>
+color:&nbsp;&nbsp;all&nbsp;processors&nbsp;that&nbsp;call&nbsp;comm_split&nbsp;with&nbsp;the&nbsp;same&nbsp;color&nbsp;will&nbsp;be&nbsp;put<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;the&nbsp;same&nbsp;communicator.<br>
+key:&nbsp;&nbsp;determines&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;processors&nbsp;in&nbsp;the&nbsp;new&nbsp;communicator</tt></dd></dl>
+</td></tr></table>
+</body></html>

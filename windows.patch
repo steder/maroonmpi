@@ -1,0 +1,318 @@
+Index: C:/Documents and Settings/steder/Desktop/mikempi/dist/MMPI-1.0.win32-py2.4.exe
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: C:\Documents and Settings\steder\Desktop\mikempi\dist\MMPI-1.0.win32-py2.4.exe
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: C:/Documents and Settings/steder/Desktop/mikempi/dist/MMPI-1.0.win32.zip
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: C:\Documents and Settings\steder\Desktop\mikempi\dist\MMPI-1.0.win32.zip
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: C:/Documents and Settings/steder/Desktop/mikempi/Makefile
+===================================================================
+--- C:/Documents and Settings/steder/Desktop/mikempi/Makefile	(revision 73)
++++ C:/Documents and Settings/steder/Desktop/mikempi/Makefile	(working copy)
+@@ -1,124 +1,128 @@
+-########################
+-# Mike Steder
+-# University of Chicago
+-# 2005
+-########################
+-
+-########################
+-# *IMPORTANT*
+-# Look over the following variables.
+-# Edit the values so that they are appropriate
+-# for your system.
+-CC=/usr/local/bin/mpicc
+-
+-# Debugging Options
+-CCOPTS=-fPIC -g -Wall -ansi #-pedantic 
+-# Release Options
+-#CCOPTS=-fPIC -O2
+-
+-# Libraries and Include Files:
+-PYTHON=python2.4
+-PYTHON_INCLUDE=/usr/include/python2.4
+-# Use this variable to point to your libpython2.x and libmpich
+-LIBRARY_PATH=
+-# LIBRARY_PATH=-L/usr/lib -L/usr/local/mympich/lib
+-
+-OS=$(shell uname -s)
+-
+-ifeq ($(OS),Linux)
+-	LD_FLAGS=-shared
+-endif
+-ifeq ($(OS),Darwin)
+-	LD_FLAGS=-bundle -flat_namespace -undefined suppress
+-endif
+-
+-# *OPTIONAL*
+-# Edit these variables to suit your taste:
+-RM=rm         # command executed to delete make products
+-CP=cp -rv     # copy command for building tar archive
+-CD=cd
+-MV=mv
+-MKDIR=mkdir      # make directory command for building tar archive
+-TAR=tar -zcf     # command for creating a tar archive
+-BZTAR=tar -jcf  # command for creating a tar archive
+-ZIP=zip -rq 
+-
+-########################
+-# Do NOT edit variables below this line 
+-# (It shouldn't be necessary).
+-NAME=mikempi
+-MINOR_NUMBER=$(shell svnversion .)
+-VERSION=1.0a$(MINOR_NUMBER)
+-ARCHIVE=$(NAME)-$(VERSION)
+-TARBALL=$(ARCHIVE).tar.gz
+-BZTARBALL=$(ARCHIVE).tar.bz2
+-ZIPFILE=$(ARCHIVE).zip
+-FILES=Makefile *.c *.py *.h SConstruct *.cfg *.txt 
+-
+-#
+-LIB=_mpi.so
+-LIB_SERIAL=_mpiserial.so
+-LIBRARIES=$(LIBRARY_PATH) -l$(PYTHON)
+-LIBRARIES_SERIAL= $(LIBRARY_PATH) -lmpi-serial -l$(PYTHON)
+-SRC=$(wildcard src/*.c)
+-HEADERS=$(wildcard src/*.h)
+-OBJ=$(SRC:.c=.o)
+-PYBC=$(wildcard *.pyc) $(wildcard mpi/*.pyc)
+-
+-### Targets ###
+-
+-default: $(LIB)
+-serial: $(LIB_SERIAL)
+-
+-#$(CC) -Wall -g  -fPIC -I$(PYTHON_INCLUDE)  -c mmpi_module.c -o mmpi_module.o
+-
+-$(LIB): $(OBJ)
+-	$(CC) $(LD_FLAGS) $(OBJ) -o $(LIB) $(LIBRARIES)
+-	mv $(LIB) mpi/
+-
+-$(LIB_SERIAL): $(OBJ)
+-	${MAKE} src/mpi-serial 
+-	$(CC) $(LD_FLAGS) $(OBJ) -o $(LIB_SERIAL) -Lsrc/mpi-serial/ $(LIBRARIES_SERIAL)
+-	mv $(LIB_SERIAL) mpi/$(LIB)
+-
+-test.exe: $(OBJ) 
+-	$(CC) -o test.exe test.o $(LIBRARIES)
+-
+-$(OBJ): $(HEADERS)
+-
+-.SUFFIXES: .o .c
+-
+-.c.o: 
+-	$(CC) $(CCOPTS) -I$(PYTHON_INCLUDE) -c $< -o $@
+-
+-clean:
+-#@echo "I will clean:" $(OBJ) $(LIB) $(PYBC)
+-	-$(RM) $(OBJ) $(PYBC) $(LIB) test.exe mpi/$(LIB) mpi/$(LIB_SERIAL)
+-
+-distclean:
+-	-$(RM) dist/*
+-
+-doc:
+-	@echo running "epydoc --html --output docs/ --url http://www.penzilla.net/mmpi/ --top http://www.penzilla.net/mmpi/docs/top.shtml mpi"
+-	@epydoc --html --output docs/ --url http://www.penzilla.net/mmpi/ --top http://www.penzilla.net/mmpi/docs/top.shtml mpi
+-
+-tar: clean 
+-	svn export . $(ARCHIVE)
+-	$(TAR) $(TARBALL) $(ARCHIVE)
+-	$(RM) -rf $(ARCHIVE)
+-	$(MV) $(TARBALL) dist
+-	ln -fs $(TARBALL) dist/$(NAME)-current.tar.gz
+-
+-bztar: clean 
+-	svn export . $(ARCHIVE)
+-	$(BZTAR) $(BZTARBALL) $(ARCHIVE)
+-	$(RM) -rf $(ARCHIVE)
+-	$(MV) $(BZTARBALL) dist
+-	ln -fs $(BZTARBALL) dist/$(NAME)-current.tar.bz2		
+-
+-zip: clean 
+-	svn export . $(ARCHIVE)
+-	$(ZIP) $(ZIPFILE) $(ARCHIVE)
+-	$(RM) -rf $(ARCHIVE)
+-	$(MV) $(ZIPFILE) dist
+-	ln -fs $(ZIPFILE) dist/$(NAME)-current.zip
+\ No newline at end of file
++########################
++# Mike Steder
++# University of Chicago
++# 2005
++########################
++
++########################
++# *IMPORTANT*
++# Look over the following variables.
++# Edit the values so that they are appropriate
++# for your system.
++CC=/usr/local/bin/mpicc
++
++# Debugging Options
++CCOPTS=-fPIC -g -Wall -ansi #-pedantic 
++# Release Options
++#CCOPTS=-fPIC -O2
++
++# Libraries and Include Files:
++PYTHON=python2.4
++PYTHON_INCLUDE=/usr/include/python2.4
++# Use this variable to point to your libpython2.x and libmpich
++LIBRARY_PATH=
++# LIBRARY_PATH=-L/usr/lib -L/usr/local/mympich/lib
++
++OS=$(shell uname -s)
++
++ifeq ($(OS),Linux)
++	LD_FLAGS=-shared
++endif
++ifeq ($(OS),Darwin)
++	LD_FLAGS=-bundle -flat_namespace -undefined suppress
++endif
++
++# *OPTIONAL*
++# Edit these variables to suit your taste:
++RM=rm         # command executed to delete make products
++CP=cp -rv     # copy command for building tar archive
++CD=cd
++MV=mv
++MKDIR=mkdir      # make directory command for building tar archive
++TAR=tar -zcf     # command for creating a tar archive
++BZTAR=tar -jcf  # command for creating a tar archive
++ZIP=zip -rq 
++
++########################
++# Do NOT edit variables below this line 
++# (It shouldn't be necessary).
++NAME=mikempi
++MINOR_NUMBER=$(shell svnversion .)
++VERSION=1.0a$(MINOR_NUMBER)
++ARCHIVE=$(NAME)-$(VERSION)
++TARBALL=$(ARCHIVE).tar.gz
++BZTARBALL=$(ARCHIVE).tar.bz2
++ZIPFILE=$(ARCHIVE).zip
++FILES=Makefile *.c *.py *.h SConstruct *.cfg *.txt 
++
++#
++LIB=_mpi.so
++LIB_SERIAL=_mpiserial.so
++LIBRARIES=$(LIBRARY_PATH) -l$(PYTHON)
++LIBRARIES_SERIAL= $(LIBRARY_PATH) -lmpi-serial -l$(PYTHON)
++SRC=$(wildcard src/*.c)
++HEADERS=$(wildcard src/*.h)
++OBJ=$(SRC:.c=.o)
++PYBC=$(wildcard *.pyc) $(wildcard mpi/*.pyc)
++
++### Targets ###
++
++default: $(LIB)
++serial: $(LIB_SERIAL)
++
++#$(CC) -Wall -g  -fPIC -I$(PYTHON_INCLUDE)  -c mmpi_module.c -o mmpi_module.o
++
++$(LIB): $(OBJ)
++	$(CC) $(LD_FLAGS) $(OBJ) -o $(LIB) $(LIBRARIES)
++	mv $(LIB) mpi/
++
++$(LIB_SERIAL): $(OBJ)
++	${MAKE} src/mpi-serial 
++	$(CC) $(LD_FLAGS) $(OBJ) -o $(LIB_SERIAL) -Lsrc/mpi-serial/ $(LIBRARIES_SERIAL)
++	mv $(LIB_SERIAL) mpi/$(LIB)
++
++test.exe: $(OBJ) 
++	$(CC) -o test.exe test.o $(LIBRARIES)
++
++$(OBJ): $(HEADERS)
++
++.SUFFIXES: .o .c
++
++.c.o: 
++	$(CC) $(CCOPTS) -I$(PYTHON_INCLUDE) -c $< -o $@
++
++clean:
++#@echo "I will clean:" $(OBJ) $(LIB) $(PYBC)
++	-$(RM) $(OBJ) $(PYBC) $(LIB) test.exe mpi/$(LIB) mpi/$(LIB_SERIAL)
++
++distclean:
++	-$(RM) dist/*
++
++doc:
++	@echo running "epydoc --html --output docs/ --url http://www.penzilla.net/mmpi/ --top http://www.penzilla.net/mmpi/docs/top.shtml mpi"
++	@epydoc --html --output docs/ --url http://www.penzilla.net/mmpi/ --top http://www.penzilla.net/mmpi/docs/top.shtml mpi
++
++tar: clean 
++	svn export . $(ARCHIVE)
++	$(TAR) $(TARBALL) $(ARCHIVE)
++	$(RM) -rf $(ARCHIVE)
++	$(MV) $(TARBALL) dist
++	ln -fs $(TARBALL) dist/$(NAME)-current.tar.gz
++
++bztar: clean 
++	svn export . $(ARCHIVE)
++	$(BZTAR) $(BZTARBALL) $(ARCHIVE)
++	$(RM) -rf $(ARCHIVE)
++	$(MV) $(BZTARBALL) dist
++	ln -fs $(BZTARBALL) dist/$(NAME)-current.tar.bz2		
++
++zip: clean 
++	svn export . $(ARCHIVE)
++	$(ZIP) $(ZIPFILE) $(ARCHIVE)
++	$(RM) -rf $(ARCHIVE)
++	$(MV) $(ZIPFILE) dist
++	ln -fs $(ZIPFILE) dist/$(NAME)-current.zip
++
++#windows:
++#C:\Documents and Settings\steder\Desktop\mikempi>python setup.py build_ext --include-dirs="C:\Program Files\MPICH2\include" -cmingw32 --with-mpicc=gcc --library
++#-dirs="C:\Program Files\MPICH2\lib" --libraries="mpi" bdist --formats=wininst
+\ No newline at end of file
+Index: C:/Documents and Settings/steder/Desktop/mikempi/setup.py
+===================================================================
+--- C:/Documents and Settings/steder/Desktop/mikempi/setup.py	(revision 73)
++++ C:/Documents and Settings/steder/Desktop/mikempi/setup.py	(working copy)
+@@ -53,8 +53,8 @@
+ print 'Setting MMPI setup with Python ',sys.executable,', version ',sys.version
+ 
+ setup(name='MMPI',
+-      version='1.0a',
+-      description='Lightweight MPI module for Python 2.3+',
++      version='1.0',
++      description='Lightweight MPI module for Python 2.4+',
+       long_description='',
+       author='Mike Steder',
+       author_email='steder@gmail.com',
+Index: C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_comm.h
+===================================================================
+--- C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_comm.h	(revision 73)
++++ C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_comm.h	(working copy)
+@@ -26,7 +26,6 @@
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/mman.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/time.h>
+Index: C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_module.c
+===================================================================
+--- C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_module.c	(revision 73)
++++ C:/Documents and Settings/steder/Desktop/mikempi/src/mmpi_module.c	(working copy)
+@@ -36,7 +36,6 @@
+ #include <mpi.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/mman.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/time.h>

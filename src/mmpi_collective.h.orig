@@ -1,0 +1,806 @@
+/*MMPI - MPI Interface for Python
+Copyright (C) 2005 Michael Steder(steder@gmail.com)
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+#ifndef MMPI_COLLECTIVE_H
+#define MMPI_COLLECTIVE_H
+
+/* Standard Header files */
+#include "Python.h"
+#include "arrayobject.h"
+#include "mpi.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Include our own code: */
+#include "mmpi_defines.h"
+#include "mmpi_globals.h"
+#include "mmpi_error.h"
+#include "mmpi_timing.h"
+#include "mmpi_utilities.h"	/* Includes typedefs and getPythonType() */
+
+/* Contains Functions: */
+
+static PyObject *mmpi_bcast(PyObject * self, PyObject * args);
+static PyObject *mmpi_reduce(PyObject * self, PyObject * args);
+static PyObject *mmpi_allreduce(PyObject * self, PyObject * args);
+static PyObject *mmpi_gather(PyObject * self, PyObject * args);
+static PyObject *mmpi_scatter(PyObject * self, PyObject * args);
+static PyObject *mmpi_alltoall(PyObject * self, PyObject * args);
+
+static PyObject *mmpi_gatherv(PyObject * self, PyObject * args);
+static PyObject *mmpi_scatterv(PyObject * self, PyObject * args);
+static PyObject *mmpi_alltoallv(PyObject * self, PyObject * args);
+
+/* Undefined Prototypes */
+static PyObject *mmpi_allgather(PyObject * self, PyObject * args);
+static PyObject *mmpi_allgatherv(PyObject * self, PyObject * args);
+static PyObject *mmpi_reduce_scatter(PyObject * self, PyObject * args);
+static PyObject *mmpi_scan(PyObject * self, PyObject * args);
+
+/* Definitions */
+
+#define MPI_BCAST_DOC "received_message = bcast( message, len(message), datatype, root, communicator )\n\nBroadcasts a message from the process with rank 'root' to all other processes of the communicator"
+static PyObject *mmpi_bcast(PyObject * self, PyObject * args)
+{
+    /* int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm ) */
+    int count, source;
+    MPI_Datatype datatype;
+    MPI_Comm comm;
+    int myid;
+    int mysize;
+    PyArrayObject *result;
+    PyArrayObject *array;
+    PyObject *input;
+    int dimensions[1];
+    char *result_buffer;
+
+    if (!PyArg_ParseTuple
+	(args, "Oilil", &input, &count, &datatype, &source, &comm))
+	return NULL;
+   
+    dimensions[0] = count;
+    
+    /* Allocate storage for the result based on dimensions and type */
+    result = (PyArrayObject *) PyArray_FromDims(1, dimensions, getPythonType(datatype));
+    result_buffer = (char *) (result->data);
+
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+    /* Get the data to broadcast from the specified source only */
+    if (myid == source) {
+      array = (PyArrayObject *) PyArray_ContiguousFromObject(input, 
+                                                                                                     getPythonType(datatype), 
+                                                                                                     0, /* Min dimensions */
+                                                                                                     0); /* Max Dimensions ( 0 means no limit ) */
+      if (array == NULL) {
+        return NULL;
+      }
+      ierror = MPI_Type_size((MPI_Datatype) datatype, &mysize);
+      memcpy( (void *) (result->data), (void *) array->data, (size_t) (mysize * count));
+      Py_DECREF(array);
+    }
+    ierror = MPI_Bcast(result_buffer, count, datatype, source, comm);
+    return PyArray_Return(result);
+}
+/* mmpi_bcast ends */
+
+#warning "Any collective MPI functions that use operations are only partially functional right now.  Operations such as MPI_MAX_LOC will not work at the moment because support needs to be added for the 'tuple-like' MPI types, (MPI_INT_DOUBLE, MPI_INT_LONG, etc)."
+#define MPI_REDUCE_DOC "result_of_op = reduce( sendbuff, recvbuff, count, datatype, operation, root, communicator\n\nReduces values on all processes to a single value and returns that value on the 'root' process"
+static PyObject *mmpi_reduce(PyObject * self, PyObject * args)
+{
+    /* int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm ) */
+    int count, root;
+    MPI_Datatype datatype;
+    MPI_Comm comm;
+    MPI_Op op;
+    int myid;
+    PyArrayObject *result;
+    PyArrayObject *array;
+    PyObject *input;
+    int dimensions[1];
+    char *sendbuffer, *recvbuffer;
+
+    if (!PyArg_ParseTuple(args, "Oillil", &input, &count, &datatype, &op, &root, &comm))
+	return NULL;
+    MPI_Comm_rank((MPI_Comm) comm, &myid);
+    
+   dimensions[0] = count; 
+   result = (PyArrayObject *) PyArray_FromDims(1, dimensions, getPythonType(datatype));
+   recvbuffer = (char *) (result->data);
+   
+   /* The 3rd and 4th arguments represent the min and max */
+   /* dimensions of this array (0 for the max means no upper bound) */
+   array = (PyArrayObject *) PyArray_ContiguousFromObject(input, getPythonType (datatype), 0, 0);
+    if (array == NULL)
+	return NULL;
+    sendbuffer = (char *) (array->data);
+    ierror = MPI_Reduce(sendbuffer, recvbuffer, count, datatype, op, root, comm);
+    Py_DECREF(array);
+    return PyArray_Return(result);
+}
+/* mmpi_reduce ends */
+
+#define MPI_SCAN_DOC "result_of_op = scan( sendbuff, count, datatype, operation, communicator )\n\nComputes the 'scan'(partial reduction) of data on a collection of processes (comm)."
+static PyObject *mmpi_scan(PyObject * self, PyObject * args)
+{
+  /* int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm ) */
+  int count, myid;
+  int dimensions[1];
+  char *sendbuffer, *recvbuffer;
+  
+  MPI_Datatype datatype;
+  MPI_Comm comm;
+  MPI_Op op;
+  PyArrayObject *result;
+  PyArrayObject *array;
+  PyObject *input;
+  
+  if (!PyArg_ParseTuple(args, "Oilll", &input, &count, &datatype, &op, &comm))
+    return NULL;
+  MPI_Comm_rank((MPI_Comm) comm, &myid);
+  
+  dimensions[0] = count; 
+  result = (PyArrayObject *) PyArray_FromDims(1, dimensions, getPythonType(datatype));
+  recvbuffer = (char *) (result->data);
+  
+  /* The 3rd and 4th arguments represent the min and max */
+  /* dimensions of this array (0 for the max means no upper bound) */
+  array = (PyArrayObject *) PyArray_ContiguousFromObject(input, getPythonType (datatype), 0, 0);
+  if (array == NULL)
+    return NULL;
+  sendbuffer = (char *) (array->data);
+  ierror = MPI_Scan(sendbuffer, recvbuffer, count, datatype, op, comm);
+  Py_DECREF(array);
+  return PyArray_Return(result);
+}
+/* mmpi_scan ends */
+
+#define MPI_ALLREDUCE_DOC "result_of_op = allreduce( sendbuff, recvbuff, count, datatype, operation, communicator\n\nCombines values from all processes using 'operation' and distributes the results back to all processes"
+static PyObject *mmpi_allreduce(PyObject * self, PyObject * args)
+{
+    /* int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm ) */
+    int count;
+    MPI_Datatype datatype;
+    MPI_Comm comm;
+    long op;
+    PyArrayObject *result;
+    PyArrayObject *array;
+    PyObject *input;
+    int dimensions[1];
+    char *sendbuffer, *recvbuffer;
+
+    if (!PyArg_ParseTuple(args, "Oilll", &input, &count, &datatype, &op, &comm))
+      return NULL;
+
+    dimensions[0] = count;
+
+    result = (PyArrayObject *) PyArray_FromDims(1, dimensions, getPythonType(datatype));
+    recvbuffer = (char *) (result->data);
+
+   /* The 3rd and 4th arguments represent the min and max */
+   /* dimensions of this array (0 for the max means no upper bound) */
+    array = (PyArrayObject *) PyArray_ContiguousFromObject(input, getPythonType(datatype), 0, 0);
+    if (array == NULL)
+	return NULL;
+    sendbuffer = (char *) (array->data);
+    ierror = MPI_Allreduce(sendbuffer, recvbuffer, count, datatype, op, comm);
+    Py_DECREF(array);
+
+    return PyArray_Return(result);
+}
+/* mmpi_allreduce ends */
+
+
+#define MPI_GATHER_DOC "recvbuf = gather( sendbuf, sendcount, sendtype, recvcount, recvtype, root, comm )\n\nGathers together values from a group of tasks"
+static PyObject *mmpi_gather(PyObject * self, PyObject * args)
+{
+  /* 
+     int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, 
+     void *recvbuf, int recvcnts, 
+     MPI_Datatype recvtype, 
+     int root, MPI_Comm comm )
+  */
+  int root;
+  MPI_Comm comm;
+  MPI_Datatype sendtype, recvtype;
+  PyObject *sendbuffer_obj;
+  PyArrayObject *array, *result;
+  int sendcnt, recvcnt, recv_total;
+  char *sendbuffer, *recvbuffer;
+  int numprocs, myid;
+  int dimensions[1];
+  
+  array = NULL;
+  sendbuffer = NULL;
+  
+  if (!PyArg_ParseTuple(args, "Oililil", &sendbuffer_obj, &sendcnt, &sendtype, &recvcnt, &recvtype, &root, &comm))
+    return NULL;
+  
+  /* get the number of processors in this comm */
+  ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+  ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+  recv_total = 0;
+  /* printf("  get sendbuffer\n"); */
+  array = (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+                                                         getPythonType(sendtype), 0, 0);
+  if (array == NULL)
+    return NULL;
+  sendbuffer = array->data;
+  if (myid == root) {
+    recv_total = recvcnt * numprocs;
+  }
+  /* printf("  allocate the recvbuffer \n"); */
+  dimensions[0] = recv_total;
+  result = (PyArrayObject *) PyArray_FromDims(1, dimensions,
+                                              getPythonType(recvtype));
+  recvbuffer = (char *) (result->data);
+  
+  
+  /* printf("   do the call %d \n",recvcnt); */
+  ierror = MPI_Gather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, root, comm);
+  Py_DECREF(array);
+  /* printf("   did the call  %d \n",myid); */
+  return PyArray_Return(result);
+}
+/* mmpi_gather ends */
+
+
+#define MPI_SCATTER_DOC "partReceived = scatter( wholeToSend, sendCount, sendType, recvCount, recvType, root, communicator )\n\nSends data from one task to all other tasks in a communicator"
+static PyObject *mmpi_scatter(PyObject * self, PyObject * args)
+{
+    /*
+       int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, 
+       void *recvbuf, int recvcnt, MPI_Datatype recvtype, 
+       int root, MPI_Comm comm )
+     */
+    int root;
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj;
+    PyArrayObject *array, *result;
+
+    int sendcnt, recvcnt;
+    int numprocs, myid;
+    int dimensions[1];
+    char *sendbuffer, *recvbuffer;
+
+    sendcnt = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple(args, "Oililil", &sendbuffer_obj, &sendcnt, &sendtype, &recvcnt,
+	                                               &recvtype, &root, &comm))
+      return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+
+    if (myid == root) {
+      /* get sendbuffer */
+      array = (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj, getPythonType(sendtype), 1, 0);
+	if (array == NULL)
+	    return NULL;
+	sendbuffer = (char *) (array->data);
+    }
+
+    /* allocate the recvbuffer */
+    dimensions[0] = recvcnt;
+    result = (PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType(recvtype));
+    recvbuffer = (char *) (result->data);
+
+    /*  do the call */
+    ierror = MPI_Scatter(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, root, comm);
+    if (myid == root) {
+      Py_DECREF(array);
+    }
+    return PyArray_Return(result);
+}
+/* mmpi_scatter ends */
+
+#define MPI_ALLTOALL_DOC "received_data = alltoall( datatosend, sendcount, sendtype, receivecount, receivetype, communicator )\n\nSends data from all processes to all processes\n(Does both a send and a receive)"
+static PyObject *mmpi_alltoall(PyObject * self, PyObject * args)
+{
+    /* 
+       int MPI_Alltoall( void *sendbuffer, int sendcount, MPI_Datatype sendtype, 
+       void *recvbuffer, int recvcnt,   MPI_Datatype recvtype, 
+       MPI_Comm comm )
+     */
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj;
+    PyArrayObject *array, *result;
+    int sendcnt, recvcnt;
+    int numprocs, myid;
+    int dimensions[1];
+    char *sendbuffer, *recvbuffer;
+    sendcnt = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple(args, "Oilill", &sendbuffer_obj, &sendcnt, &sendtype, &recvcnt,
+	 &recvtype, &comm))
+	return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+
+    /* get sendbuffer */
+    array = (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+						       PyArray_INT, 1, 3);
+    if (array == NULL)
+	return NULL;
+    sendbuffer = (char *) (array->data);
+
+
+    /* allocate the recvbuffer */
+    dimensions[0] = recvcnt * numprocs;
+    result =
+	(PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType(recvtype));
+    recvbuffer = (char *) (result->data);
+
+    /*  do the call */
+    ierror = MPI_Alltoall(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, comm);
+    Py_DECREF(array);
+    return PyArray_Return(result);
+} 
+/* mmpi_alltoall ends */
+
+#define MPI_GATHERV_DOC "recvbuffer = gatherv( sendbuffer, sendcount, sendtype, recvcounts, displacements, recvtype, root, comm )\n\nGathers into specified locations from all tasks in a group"
+static PyObject *mmpi_gatherv(PyObject * self, PyObject * args)
+{
+    /* 
+       int MPI_Gatherv ( void *sendbuffer, int sendcnt,                MPI_Datatype sendtype, 
+       void *recvbuffer, int *recvcnts, int *displs, MPI_Datatype recvtype, 
+       int root, MPI_Comm comm )
+     */
+    int root;
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj, *recvcnts_obj, *displs_obj;
+    PyArrayObject *array, *result;
+    int sendcnt, *displs, *recvcnts, recv_total, i;
+    char *sendbuffer, *recvbuffer;
+    int numprocs, myid;
+    int dimensions[1];
+
+    displs = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple
+	(args, "OilOOlil", &sendbuffer_obj, &sendcnt, &sendtype,
+	 &recvcnts_obj, &displs_obj, &recvtype, &root, &comm))
+	return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+    recv_total = 0;
+    recvcnts = 0;
+    if (myid == root) {
+	/* printf("  get the recv_counts array \n"); */
+	array =
+	    (PyArrayObject *) PyArray_ContiguousFromObject(recvcnts_obj,
+							   PyArray_INT, 1,
+							   1);
+	if (array == NULL)
+	    return NULL;
+	recvcnts = (int *) malloc((size_t) (sizeof(int) * numprocs));
+	memcpy((void *) recvcnts, (void *) array->data,
+	       (size_t) (sizeof(int) * numprocs));
+	recv_total = 0;
+	for (i = 0; i < numprocs; i++) {
+      recv_total = recv_total + recvcnts[i];
+    }
+	Py_DECREF(array);
+	/* printf("  get the offset array \n"); */
+	array =
+	    (PyArrayObject *) PyArray_ContiguousFromObject(displs_obj,
+							   PyArray_INT, 1,
+							   1);
+	if (array == NULL)
+	    return NULL;
+	displs = (int *) malloc((size_t) (sizeof(int) * numprocs));
+	memcpy((void *) displs, (void *) array->data,
+	       (size_t) (sizeof(int) * numprocs));
+	Py_DECREF(array);
+    }
+    /* printf("  allocate the recvbuffer \n"); */
+    dimensions[0] = recv_total;
+    result =
+	(PyArrayObject *) PyArray_FromDims(1, dimensions,
+					                   getPythonType(recvtype));
+    recvbuffer = (char *) (result->data);
+    /* printf("  get sendbuffer\n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+						                           getPythonType(sendtype), 
+                                                   1, 3);
+    if (array == NULL)
+      return NULL;
+
+    sendbuffer = array->data;
+
+    /* printf("   do the call %d \n",recvcnt); */
+    ierror =
+	MPI_Gatherv(sendbuffer, sendcnt, (MPI_Datatype) sendtype, recvbuffer, recvcnts,
+		    displs, (MPI_Datatype) recvtype, root,
+		    (MPI_Comm) comm);
+    if (myid == root) {
+	Py_DECREF(array);
+	free(recvcnts);
+	free(displs);
+    }
+    /* printf("   did the call  %d \n",myid); */
+    return PyArray_Return(result);
+}
+/* mmpi_gatherv ends */
+
+#define MPI_SCATTERV_DOC "partReceived = scatterv( wholeToSend, sendCount, displacements, sendType, recvCount, recvType, root, communicator )\n\nScatters a bufferfer in parts to al tasks in a group"
+static PyObject *mmpi_scatterv(PyObject * self, PyObject * args)
+{
+    /* int MPI_Scatterv(void *sendbuffer, int *sendcnt, int *displs, MPI_Datatype sendtype, 
+       void *recvbuffer, int recvcnt,                MPI_Datatype recvtype, 
+       int root, MPI_Comm comm ) 
+     */
+    int root;
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj, *sendcnt_obj, *displs_obj;
+    PyArrayObject *array, *result;
+    int *sendcnt, *displs, recvcnt;
+    char *sendbuffer, *recvbuffer;
+    int *sray;
+    int numprocs, myid;
+    int dimensions[1];
+
+    sendcnt = 0;
+    displs = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple(args, "OOOlilil", &sendbuffer_obj, &sendcnt_obj, &displs_obj,
+	 &sendtype, &recvcnt, &recvtype, &root, &comm))
+      return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+
+    if (myid == root) {
+      array =  (PyArrayObject *) PyArray_ContiguousFromObject(sendcnt_obj,
+							   PyArray_INT, 1,
+							   1);
+      if (array == NULL)
+        return NULL;
+      sendcnt = (int *) malloc((size_t) (sizeof(int) * numprocs));
+      memcpy((void *) sendcnt, (void *) array->data, (size_t) (sizeof(int) * numprocs));
+      Py_DECREF(array);
+      array = (PyArrayObject *) PyArray_ContiguousFromObject(displs_obj,
+							   PyArray_INT, 1,
+							   1);
+      if (array == NULL)
+        return NULL;
+      displs = (int *) malloc((size_t) (sizeof(int) * numprocs));
+      memcpy((void *) displs, (void *) array->data, (size_t) (sizeof(int) * numprocs));
+      Py_DECREF(array);
+      array =  (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+							   getPythonType
+							   (sendtype), 1,
+							   3);
+      if (array == NULL)
+        return NULL;
+      sendbuffer = array->data;
+      sray = (int *) sendbuffer;
+    }
+
+    dimensions[0] = recvcnt;
+    result = (PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType
+					   (recvtype));
+    recvbuffer = (char *) (result->data);
+
+    ierror = MPI_Scatterv(sendbuffer, sendcnt, displs, sendtype, recvbuffer,
+		           recvcnt, recvtype, root, comm);
+    if (myid == root) {
+      Py_DECREF(array);
+      free(sendcnt);
+      free(displs);
+    }
+    return PyArray_Return(result);
+}
+/* mmpi_scatterv ends */
+
+#define MPI_ALLTOALLV_DOC "receivedData=alltoallv( sendBufferf, sendCounts, sendDisplacements, sendType, receiveCounts, receiveDisplacements, receiveType, communicator )\n\nSends data from all to all processes, with a displacement."
+static PyObject *mmpi_alltoallv(PyObject * self, PyObject * args)
+{
+    /* 
+       int MPI_Alltoallv ( void *sendbuffer, int *sendcnt, int *sdispls, MPI_Datatype sendtype, 
+       void *recvbuffer, int *recvcnts, int *rdispls, MPI_Datatype recvtype, 
+       MPI_Comm comm )
+     */
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj, *recvcnts_obj, *rdispls_obj, *sdispls_obj,
+	*sendcnt_obj;
+    PyArrayObject *array, *result;
+    int *sendcnt, *sdispls, *rdispls, *recvcnts, recv_total, i;
+    char *sendbuffer, *recvbuffer;
+    int numprocs;
+    int dimensions[1];
+
+    rdispls = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple
+	(args, "OOOlOOll", &sendbuffer_obj, &sendcnt_obj, &sdispls_obj,
+	 &sendtype, &recvcnts_obj, &rdispls_obj, &recvtype, &comm))
+	return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    recv_total = 0;
+    recvcnts = 0;
+
+    /* printf("  get the recvcnts array \n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(recvcnts_obj,
+						       PyArray_INT, 1, 1);
+    if (array == NULL)
+	return NULL;
+    recvcnts = (int *) malloc((size_t) (sizeof(int) * numprocs));
+    memcpy((void *) recvcnts, (void *) array->data,
+	   (size_t) (sizeof(int) * numprocs));
+    recv_total = 0;
+    for (i = 0; i < numprocs; i++)
+	recv_total = recv_total + recvcnts[i];
+    Py_DECREF(array);
+
+    /* printf("  get the recv offset array \n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(rdispls_obj,
+						       PyArray_INT, 1, 1);
+    if (array == NULL)
+	return NULL;
+    rdispls = (int *) malloc((size_t) (sizeof(int) * numprocs));
+    memcpy((void *) rdispls, (void *) array->data,
+	   (size_t) (sizeof(int) * numprocs));
+    Py_DECREF(array);
+
+    /* printf("  allocate the recvbuffer \n"); */
+    dimensions[0] = recv_total;
+    result =
+	(PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType
+					   (recvtype));
+    recvbuffer = (char *) (result->data);
+
+
+
+    /* printf("  get the sendcnt array \n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(sendcnt_obj,
+						       PyArray_INT, 1, 1);
+    if (array == NULL)
+	return NULL;
+    sendcnt = (int *) malloc((size_t) (sizeof(int) * numprocs));
+    memcpy((void *) sendcnt, (void *) array->data,
+	   (size_t) (sizeof(int) * numprocs));
+    Py_DECREF(array);
+
+    /* printf("  get the send offset array \n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(sdispls_obj,
+						       PyArray_INT, 1, 1);
+    if (array == NULL)
+	return NULL;
+    sdispls = (int *) malloc((size_t) (sizeof(int) * numprocs));
+    memcpy((void *) sdispls, (void *) array->data,
+	   (size_t) (sizeof(int) * numprocs));
+    Py_DECREF(array);
+
+    /* printf("  get sendbuffer\n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+						       getPythonType
+						       (sendtype), 1, 3);
+    if (array == NULL)
+	return NULL;
+    sendbuffer = (char *) array->data;
+
+    /* printf("   do the call %d \n"); */
+    /*
+       MPI_Comm_rank((MPI_Comm)comm,&myid);
+       printf("myid =%d ",myid);
+       for(i=0;i<numprocs;i++) 
+       printf("%d ",sendcnt[i]);
+       printf(" | ");
+       for(i=0;i<numprocs;i++) 
+       printf("%d ",sdispls[i]);
+       printf(" | ");
+       for(i=0;i<numprocs;i++) 
+       printf("%d ",recvcnts[i]);
+       printf(" | ");
+       for(i=0;i<numprocs;i++) 
+       printf("%d ",rdispls[i]);
+       printf("\n");
+     */
+    ierror =
+	MPI_Alltoallv(sendbuffer, sendcnt, sdispls, (MPI_Datatype) sendtype,
+		      recvbuffer, recvcnts, rdispls, (MPI_Datatype) recvtype,
+		      (MPI_Comm) comm);
+
+    Py_DECREF(array);
+    free(recvcnts);
+    free(rdispls);
+    free(sendcnt);
+    free(sdispls);
+
+    return PyArray_Return(result);
+}
+
+#define MPI_ALLGATHER_DOC "recvbuf = gather( sendbuf, sendcount, sendtype, recvcount, recvtype, comm )\n\nGathers together values from a group of tasks and places the result on all processors in comm."
+static PyObject *mmpi_allgather(PyObject * self, PyObject * args)
+{
+    /* 
+       int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, 
+       void *recvbuf, int recvcnts, 
+       MPI_Datatype recvtype, 
+       int root, MPI_Comm comm )
+     */
+    int root;
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj;
+    PyArrayObject *array, *result;
+    int sendcnt, recvcnt, recv_total;
+    char *sendbuffer, *recvbuffer;
+    int numprocs, myid;
+    int dimensions[1];
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple(args, "Oilill", &sendbuffer_obj, &sendcnt, &sendtype, &recvcnt, &recvtype, &comm))
+      return NULL;
+
+    /* get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+    recv_total = 0;
+    /* printf("  get sendbuffer\n"); */
+    array = (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+						       getPythonType(sendtype), 
+                                                                                              0, 0);
+    if (array == NULL)
+      return NULL;
+    sendbuffer = array->data;
+    if (myid == root) {
+      recv_total = recvcnt * numprocs;
+    }
+    /* printf("  allocate the recvbuffer \n"); */
+    dimensions[0] = recv_total;
+    result = (PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType(recvtype));
+    recvbuffer = (char *) (result->data);
+
+
+    /* printf("   do the call %d \n",recvcnt); */
+    ierror = MPI_Gather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, root, comm);
+    Py_DECREF(array);
+    /* printf("   did the call  %d \n",myid); */
+    return PyArray_Return(result);
+}
+/* mmpi_allgather ends */
+
+#define MPI_ALLGATHERV_DOC "recvbuffer = allgatherv( sendbuffer, sendcount, sendtype, recvcounts, displacements, recvtype, comm )\n\nGathers into specified locations from all tasks in a comm and returns the result to all tasks in the comm."
+static PyObject *mmpi_allgatherv(PyObject * self, PyObject * args)
+{
+    /* 
+       int MPI_Gatherv ( void *sendbuffer, int sendcnt,                MPI_Datatype sendtype, 
+       void *recvbuffer, int *recvcnts, int *displs, MPI_Datatype recvtype, 
+       int root, MPI_Comm comm )
+     */
+    int root;
+    MPI_Comm comm;
+    MPI_Datatype sendtype, recvtype;
+    PyObject *sendbuffer_obj, *recvcnts_obj, *displs_obj;
+    PyArrayObject *array, *result;
+    int sendcnt, *displs, *recvcnts, recv_total, i;
+    char *sendbuffer, *recvbuffer;
+    int numprocs, myid;
+    int dimensions[1];
+
+    displs = 0;
+
+    array = NULL;
+    sendbuffer = NULL;
+
+    if (!PyArg_ParseTuple
+	(args, "OilOOll", &sendbuffer_obj, &sendcnt, &sendtype,
+	 &recvcnts_obj, &displs_obj, &recvtype, &comm))
+	return NULL;
+    /* ! get the number of processors in this comm */
+    ierror = MPI_Comm_size((MPI_Comm) comm, &numprocs);
+    ierror = MPI_Comm_rank((MPI_Comm) comm, &myid);
+    recv_total = 0;
+    recvcnts = 0;
+    if (myid == root) {
+	/* printf("  get the recv_counts array \n"); */
+	array =
+	    (PyArrayObject *) PyArray_ContiguousFromObject(recvcnts_obj,
+							   PyArray_INT, 1,
+							   1);
+	if (array == NULL)
+	    return NULL;
+	recvcnts = (int *) malloc((size_t) (sizeof(int) * numprocs));
+	memcpy((void *) recvcnts, (void *) array->data,
+	       (size_t) (sizeof(int) * numprocs));
+	recv_total = 0;
+	for (i = 0; i < numprocs; i++)
+	    recv_total = recv_total + recvcnts[i];
+	Py_DECREF(array);
+	/* printf("  get the offset array \n"); */
+	array =
+	    (PyArrayObject *) PyArray_ContiguousFromObject(displs_obj,
+							   PyArray_INT, 1,
+							   1);
+	if (array == NULL)
+	    return NULL;
+	displs = (int *) malloc((size_t) (sizeof(int) * numprocs));
+	memcpy((void *) displs, (void *) array->data,
+	       (size_t) (sizeof(int) * numprocs));
+	Py_DECREF(array);
+    }
+    /* printf("  allocate the recvbuffer \n"); */
+    dimensions[0] = recv_total;
+    result =
+	(PyArrayObject *) PyArray_FromDims(1, dimensions,
+					   getPythonType
+					   (recvtype));
+    recvbuffer = (char *) (result->data);
+    /* printf("  get sendbuffer\n"); */
+    array =
+	(PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
+						       getPythonType
+						       (sendtype), 1, 3);
+    if (array == NULL)
+	return NULL;
+    sendbuffer = array->data;
+
+
+    /* printf("   do the call %d \n",recvcnt); */
+    ierror =
+	MPI_Gatherv(sendbuffer, sendcnt, (MPI_Datatype) sendtype, recvbuffer, recvcnts,
+		    displs, (MPI_Datatype) recvtype, root,
+		    (MPI_Comm) comm);
+    if (myid == root) {
+	Py_DECREF(array);
+	free(recvcnts);
+	free(displs);
+    }
+    /* printf("   did the call  %d \n",myid); */
+    return PyArray_Return(result);
+}
+/* mmpi_allgatherv ends */
+
+#endif

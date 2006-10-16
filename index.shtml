@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="StyleSheet" href="style.css" type="text/css" media="screen" />
+    <title>MMPI: Home</title>
+  </head>
+  <body>
+    <div id="header">
+      <!--Logo-->
+      <h1>Welcome to the MMPI Homepage</h1>
+      <hr />
+    </div>
+    <div id="sidebar">
+      <div id="menu">
+        <a href="index.shtml">Home</a><br />
+        <a href="features.shtml">Features</a><br />
+        <a href="docs/">Documentation</a><br /> 
+        <a href="install.shtml">Installation</a><br />
+        <a href="examples/">Examples</a><br />
+        <a href="mailto:steder@gmail.com">Contact</a><br />
+        </div>
+    </div>
+    <div id="content">
+      <!--Body-->
+      <h3>MMPI News</h3>
+      <h4>10/16/06: Release 1.1!</h4>
+      <p>What's new?
+      <ul>
+        <li>*new* *improved* "pythonic" interface</li>
+        <li>Improved support for the new <a href="http://numpy.sf.net">Numpy</a> array implementation</li>
+        <li>Bug fixes to support the <a href="http://www.open-mpi.org/">OpenMPI</a> implementation</li>
+        <li>MPE Logging Support(i.e.:<a href="http://www-unix.mcs.anl.gov/perfvis/software/viewers/index.htm">Jumpshot</a>)</li>
+      </ul>
+      </p>
+      <h4>6/21/06: More bug fixes in version 1.0.102</h4>
+      <p>More minor tweaks and fixes for PyMPI syntax support.</p>
+      <p>The current windows version is terribly out of date and
+      a new release should be made available soon.  Please contact
+      me directly if you are interested in getting your hands on
+      a windows version of MMPI.</p>
+      <h4>6/14/06: New Release version 1.0.99</h4>
+      <p>This new version gets us closer to a final 1.0 release by 
+      including additional PyMPI syntax support along with a couple
+      bug fixes.</p>
+      <p>To try out PyMPI syntax a bit, I suggest the following:</p>
+      <div id="code"><pre><code>
+from mpi import pympi as mpi
+# MPI is now initialized:
+print "Hello from rank %d"%(mpi.rank)
+b = mpi.bcast([3,4,5])
+mpi.barrier()
+print b
+      </code></pre></div>
+        <h3>About MMPI</h3>
+      <p>MMPI <i>( pronounced "Mmmm, PIE!", or an acryonym for "MikeMPI"
+          )</i>, is a Python extension module that provides a simple
+        interface to the MPI library. MMPI builds as a single CPython
+        extension module <i>(a shared library)</i> and is extended by a
+        number of easy to modify Python files. MMPI installs like many
+        other Python modules using a single setup.py script.</p>
+      <p>The goal of MMPI is to create a straightforward interface to MPI
+        that can be easily modified and extended by users to suit their
+        needs. MMPI allows the user to choose from a number of ways to
+        invoke MPI functions. By default, MMPI provides a straightforward
+        translation between C/Fortran MPI calls and the new Python calls.
+        The hope is that experience with C/Fortran MPI programming can be
+        leveraged when writing Python MPI, and that new MPI programmers can
+        learn using Python MPI and use their Python experience to write MPI
+        code in other languages.</p>
+      <p>MMPI currently supports numbers, lists, tuples, and Numeric
+        <i>(Numpy, ScipyCore)</i> Arrays. You can also serialize and ship
+        arbitrary objects although support for them is somewhat hackish.
+        However, numbers and arrays are most likely what will be
+        interesting in parallel Python codes. Also worth noting is that
+        MMPI <b>does not</b> make copies of Numeric arrays, so you won't
+        waste time.</p>
+      <p>A recent addition to MMPI has been support for Asynchronous I/O
+        <i>(nonblocking sends and receives, wait, test, etc )</i>. This is
+        particularly useful for running examples at the interpreter or on a
+        single processor. Additionally non-blocking I/O enables you to more
+        easily overlap communication and computation.</p>
+      <p>MMPI is being produced largely by me<i>(Mike Steder)</i>, and is
+        being developed as part of an ongoing project at the 
+        <a href="http://www.uchicago.edu">University of Chicago</a>'s 
+        <a href="http://geosci.uchicago.edu/csc/">Climate System's Center</a>. 
+        MMPI is still under development. The 1.0 release supports the core MPI
+        functions, such as send, recv, comm_split, barrier, bcast, reduce,
+        etc. Support for graphs, cartesian communicators, and non-blocking
+        collective operations are planned for future versions <i>(1.1/1.2,
+          etc)</i>.</p>
+      <h3>Downloading MMPI</h3>
+      <p>
+      The most recent version of MMPI was released June 14th, 2006.  
+      Click one of the following links to download MMPI directly from 
+      this site:
+      </p>
+      <ul>
+        <li>Current MMPI in gzip'd tar'd format: <a href="dist/mikempi-current.tar.gz">mikempi-current.tar.gz</a></li>
+        <li>Current MMPI in bzip2'd tar'd format: <a href="dist/mikempi-current.tar.bz2">mikempi-current.tar.bz2</a></li>
+        <li>Current MMPI in zipfile format: <a href="dist/mikempi-current.zip">mikempi-current.zip</a></li>
+        <li><a href="dist/">Browse for a specific version of MMPI</a>
+          .</li>
+      </ul>
+      <h3>Getting Help (Questions and Comments)</h3>
+      <P>If you are using MMPI, or looking to use it, I'd love to hear from you.  I'm interested in how you're using MMPI and whether I can do anything to make it more usable.  If you are looking to extend MMPI (either to provide another interface you prefer or additional MPI functionality) I would be happy to include changes into my version.</P>
+      <p>I'm available via e-mail if you have problems building MMPI or run into bugs using it.</P>
+      <p>Happy Hacking!</P>
+  
+    </div>
+    <div id="footer">
+      <hr/>
+      &copy; m. steder (2006)
+    </div>
+  </body>
+</html>
