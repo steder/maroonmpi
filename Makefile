@@ -55,7 +55,7 @@ ZIP=zip -rq
 ########################
 # Do NOT edit variables below this line 
 # (It shouldn't be necessary).
-NAME=mikempi
+NAME=maroonmpi
 MINOR_NUMBER=$(shell svnversion .)
 VERSION=1.1.$(MINOR_NUMBER)
 ARCHIVE=$(NAME)-$(VERSION)
