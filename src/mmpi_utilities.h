@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "Python.h"
 #include "arrayobject.h"
-
 #include "mmpi_globals.h"
 
 /* This function translates an MPI Type into a Python Type. */
@@ -37,7 +36,7 @@ int getPythonType(MPI_Datatype mpitype)
      drop through to the same return PyArray_LONG; 
    */
     if (mpitype == MPI_BYTE)
-    	return PyArray_SBYTE;/* Or PyArray_UBYTE (signed / unsigned) */
+    	return PyArray_BYTE;/* Or PyArray_UBYTE (signed / unsigned) */
     if (mpitype == MPI_CHAR)
       return PyArray_CHAR;
     if (mpitype == MPI_SHORT)

@@ -17,7 +17,7 @@ CCOPTS=-fPIC -g -Wall -ansi #-pedantic
 #CCOPTS=-fPIC -O2
 
 # Libraries and Include Files:
-PYTHON=python2.4
+PYTHON=python
 #PYTHONLIB=$(PYTHON)
 
 # Defaults:
@@ -28,9 +28,9 @@ PYTHON=python2.4
 
 # Mac OS X.4:
 PYTHONLIB=python
-PYTHON_INCLUDES=-I/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4/ -I/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4/Numeric
-LIBRARY_PATH=-L/Library/Frameworks/Python.framework/Versions/2.4/lib/python2.4/ -L/usr/lib/ 
-INCLUDES=-I/usr/include/
+PYTHON_INCLUDES=-I/sw/include/python2.5 -I/sw/include/python2.5/numpy
+LIBRARY_PATH=-L/sw/lib/python2.5
+INCLUDES=-I/usr/local/include/
 
 OS=$(shell uname -s)
 
@@ -87,7 +87,8 @@ IOHEADERS=
 
 ### Targets ###
 
-default: $(LIBMPI) 
+default: lib 
+lib: $(LIBMPI) 
 mpe: $(LIBMPE)
 serial: $(LIBMPI_SERIAL)
 

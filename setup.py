@@ -50,7 +50,6 @@ distutils.unixccompiler.UnixCCompiler = MPI_UnixCCompiler
 SOURCE = ["src/mmpi_module.c"]
 INCLUDES = [os.path.join( get_python_inc(), array_prefix )
             ]
-
 MPESOURCE = ["src/mpe_module.c"]
 LIBRARIES = ["mpe"]
 
