@@ -28,6 +28,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "arrayobject.h"
 #include "mmpi_globals.h"
 
+#ifndef PyArray_BYTE
+#define BYTE PyArray_SBYTE
+#else
+#define BYTE PyArray_BYTE
+#endif
+
 /* This function translates an MPI Type into a Python Type. */
 int getPythonType(MPI_Datatype mpitype)
 {
@@ -36,7 +42,7 @@ int getPythonType(MPI_Datatype mpitype)
      drop through to the same return PyArray_LONG; 
    */
     if (mpitype == MPI_BYTE)
-    	return PyArray_BYTE;/* Or PyArray_UBYTE (signed / unsigned) */
+    	return BYTE;/* Or PyArray_UBYTE (signed / unsigned) */
     if (mpitype == MPI_CHAR)
       return PyArray_CHAR;
     if (mpitype == MPI_SHORT)
