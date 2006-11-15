@@ -119,7 +119,7 @@ def allgather( sendbuffer, sendcount, sendtype, recvcount,
                              comm )
     """
     if ( _mpi.mpi_initialized() ):
-        return _mpi.mpi_allgather( sendbuffer, sendcount, sendtype, recvcount, recvtype, root, comm )
+        return _mpi.mpi_allgather( sendbuffer, sendcount, sendtype, recvcount, recvtype, comm )
     else:
         raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.allgather")
 
