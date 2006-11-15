@@ -249,7 +249,6 @@ static PyObject *mmpi_gather(PyObject * self, PyObject * args)
                                               getPythonType(recvtype));
   recvbuffer = (char *) (result->data);
   
-  
   /* printf("   do the call %d \n",recvcnt); */
   ierror = MPI_Gather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, root, comm);
   Py_DECREF(array);
@@ -662,7 +661,7 @@ static PyObject *mmpi_alltoallv(PyObject * self, PyObject * args)
 static PyObject *mmpi_allgather(PyObject * self, PyObject * args)
 {
     /* 
-       int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, 
+       int MPI_Allgather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, 
        void *recvbuf, int recvcnts, 
        MPI_Datatype recvtype, 
        int root, MPI_Comm comm )
@@ -689,23 +688,21 @@ static PyObject *mmpi_allgather(PyObject * self, PyObject * args)
     recv_total = 0;
     /* printf("  get sendbuffer\n"); */
     array = (PyArrayObject *) PyArray_ContiguousFromObject(sendbuffer_obj,
-						       getPythonType(sendtype), 
-                                                                                              0, 0);
+						       getPythonType(sendtype), 0, 0);
     if (array == NULL)
       return NULL;
     sendbuffer = array->data;
-    if (myid == root) {
-      recv_total = recvcnt * numprocs;
-    }
+    /* All processors allocate a buffer */
+    recv_total = recvcnt * numprocs;
+    
     /* printf("  allocate the recvbuffer \n"); */
     dimensions[0] = recv_total;
     result = (PyArrayObject *) PyArray_FromDims(1, dimensions,
 					   getPythonType(recvtype));
     recvbuffer = (char *) (result->data);
 
-
     /* printf("   do the call %d \n",recvcnt); */
-    ierror = MPI_Allgather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype,comm);
+    ierror = MPI_Allgather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, comm);
     Py_DECREF(array);
     /* printf("   did the call  %d \n",myid); */
     return PyArray_Return(result);
