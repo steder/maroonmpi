@@ -705,7 +705,7 @@ static PyObject *mmpi_allgather(PyObject * self, PyObject * args)
 
 
     /* printf("   do the call %d \n",recvcnt); */
-    ierror = MPI_Gather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype, root, comm);
+    ierror = MPI_Allgather(sendbuffer, sendcnt, sendtype, recvbuffer, recvcnt, recvtype,comm);
     Py_DECREF(array);
     /* printf("   did the call  %d \n",myid); */
     return PyArray_Return(result);
@@ -716,9 +716,8 @@ static PyObject *mmpi_allgather(PyObject * self, PyObject * args)
 static PyObject *mmpi_allgatherv(PyObject * self, PyObject * args)
 {
     /* 
-       int MPI_Gatherv ( void *sendbuffer, int sendcnt,                MPI_Datatype sendtype, 
-       void *recvbuffer, int *recvcnts, int *displs, MPI_Datatype recvtype, 
-       int root, MPI_Comm comm )
+       int MPI_Allgatherv ( void *sendbuffer, int sendcnt,                MPI_Datatype sendtype, 
+       void *recvbuffer, int *recvcnts, int *displs, MPI_Datatype recvtype,  MPI_Comm comm )
      */
     int root;
     MPI_Comm comm;
@@ -790,8 +789,8 @@ static PyObject *mmpi_allgatherv(PyObject * self, PyObject * args)
 
     /* printf("   do the call %d \n",recvcnt); */
     ierror =
-	MPI_Gatherv(sendbuffer, sendcnt, (MPI_Datatype) sendtype, recvbuffer, recvcnts,
-		    displs, (MPI_Datatype) recvtype, root,
+	MPI_Allgatherv(sendbuffer, sendcnt, (MPI_Datatype) sendtype, recvbuffer, recvcnts,
+		    displs, (MPI_Datatype) recvtype, 
 		    (MPI_Comm) comm);
     if (myid == root) {
 	Py_DECREF(array);
