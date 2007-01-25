@@ -7,8 +7,9 @@ try:
     numprocs = int(sys.argv[1])
     script = os.path.realpath(sys.argv[2])
 
-    result = os.popen( "mpiexec -l -n %s python %s" % (numprocs, script) ).read()
-    
+    command = "mpiexec -l -n %s python %s" % (numprocs, script)
+    print command
+    result = os.popen( command ).read()
     print result
     
 except:

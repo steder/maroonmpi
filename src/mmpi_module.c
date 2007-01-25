@@ -30,8 +30,15 @@ the state of the MPI environment as well as wrapped versions of MPI calls.\n\nMi
 /*
 "module _mpi\n\nThis module contains Python versions of the following MPI functions:\n\tmpi_barrier\n\tmpi_send\n\tmpi_recv\n\tmpi_status\n\tmpi_probe\n\tmpi_get_count\n\tmpi_initialized\n\tmpi_init\n\tmpi_start\n\tmpi_finalize\n\tmpi_iprobe\n\tmpi_test\n\tmpi_wait\n\tmpi_isend\n\tmpi_irecv\n\tmpi_bcast\n\tmpi_scatterv\n\tmpi_gatherv\n\tmpi_scatter\n\tmpi_gather\n\tmpi_reduce\n\tmpi_allreduce\n\tmpi_alltoall\n\tmpi_alltoallv\n\tmpi_comm_size\n\tmpi_comm_rank\n\tmpi_group_rank\n\tmpi_group_incl\n\tmpi_comm_group\n\tmpi_comm_dup\n\tmpi_comm_create\n\tmpi_comm_split\n\tmpi_error\n\tmpi_error_string\n\tmpi_wtick\n\tmpi_wtime\n\n"
 */
+
 /* Standard Header files */
 #include "Python.h"
+/* Python2.5 64-bit Hack for older python versions */
+#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
+typedef int Py_ssize_t;
+#define PY_SSIZE_T_MAX INT_MAX
+#define PY_SSIZE_T_MIN INT_MIN
+#endif
 #include "arrayobject.h"
 #include "mpi.h"
 #include <sys/types.h>
@@ -97,11 +104,16 @@ static PyObject *mmpi_initialized(PyObject * self, PyObject * args)
 \n\nSee initialized, start"
 static PyObject *mmpi_init(PyObject * self, PyObject * args)
 {
+    
     int initialized;
-    int myargc = 1;
-    char *test = "fake_argv\0";
-    char **myargv[1];/*{"fake_argv\0"};*/
     int numprocs, myid;
+
+    int myargc = 1;
+    char **myargv;
+    /* Add one for the NULL at the end  */
+    myargv = calloc(myargc + 1, sizeof(char *));
+    myargv[0] = strdup("maroonmpi");
+    myargv[myargc] = NULL;
 
     /* Setting some default values */
     numprocs = -1;
@@ -110,12 +122,15 @@ static PyObject *mmpi_init(PyObject * self, PyObject * args)
     ierror = MPI_Initialized(&initialized);
 
     if (!initialized) {
-      myargv[0] = &test;
-      ierror = MPI_Init(&myargc, myargv);
+        ierror = MPI_Init(&myargc, &myargv);
     } 
 
     ierror = MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     ierror = MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+    
+    free( myargv[1] );
+    free( myargv[0] );
+    free( myargv );
 
     return Py_BuildValue("(ll)", myid, numprocs);
 }
@@ -135,7 +150,7 @@ static PyObject *mmpi_finalize(PyObject * self, PyObject * args)
 Returns the unique name of the calling processor as a string."
 static PyObject *mmpi_get_processor_name(PyObject * self, PyObject * args)
 {
-  int length;
+  Py_ssize_t length;
   char name[MPI_MAX_PROCESSOR_NAME];
   
   ierror = MPI_Get_processor_name( name, &length );
