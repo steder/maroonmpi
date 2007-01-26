@@ -75,6 +75,14 @@ static PyObject *mmpi_mpe_finish_log(PyObject * self, PyObject * args)
   return Py_BuildValue("i",errorcode);
 }
 
+#define MPE_LOG_GET_EVENT_NUMBER_DOC "eventIDNumber = mpe_log_get_event_number()\n\n Create an event ID.\n"
+static PyObject *mmpi_mpe_log_get_event_number(PyObject *self, PyObject *args)
+{
+    int number;
+    number = MPE_Log_get_event_number();
+    return Py_BuildValue("i",number);
+}
+
 #define MPE_LOG_EVENT_DOC "errorcode = mpe_log_event( int event, int intdata, \
 char *chardata )\n\n Create and log an event. \n\
 The first integer argument is the *user defined* type of the event.\n\
@@ -143,6 +151,7 @@ static PyMethodDef mpeMethods[] = {
   {"mpe_init_log",mmpi_mpe_init_log, METH_NOARGS, MPE_INIT_LOG_DOC},
   {"mpe_finish_log",mmpi_mpe_finish_log, METH_VARARGS, MPE_INIT_LOG_DOC},
   {"mpe_log_event",mmpi_mpe_log_event, METH_VARARGS, MPE_LOG_EVENT_DOC},
+  {"mpe_log_get_event_number",mmpi_mpe_log_get_event_number, METH_NOARGS, MPE_LOG_GET_EVENT_NUMBER_DOC},
   {"mpe_describe_event",mmpi_mpe_describe_event, METH_VARARGS, MPE_DESCRIBE_EVENT_DOC},
   {"mpe_describe_state",mmpi_mpe_describe_state, METH_VARARGS, MPE_DESCRIBE_STATE_DOC},
   {"mpe_start_log",mmpi_mpe_start_log, METH_NOARGS, MPE_START_LOG_DOC},

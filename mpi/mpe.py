@@ -144,6 +144,12 @@ def describe_state( startevent, stopevent, description, color ):
     else:
         raise mpeException, "Attempt to call %s before mpi.init!"%("mpi.describe_state")
 
+def log_get_event_number():
+    """
+    Returns a unique event ID number for use in describe statements.
+    """
+    return _mpe.mpe_log_get_event_number()
+
 class Log:
     def __init__(self, filename=str(time.time())):
         self.running = False
