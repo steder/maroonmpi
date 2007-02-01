@@ -3,7 +3,7 @@
 import sys, os, glob
 
 from distutils.core import setup, Extension
-from distutils.sysconfig import get_python_inc
+from distutils.sysconfig import get_python_inc, get_python_lib
 import distutils.unixccompiler
 
 # process special arguments; these are default values
@@ -18,9 +18,13 @@ mpicc_bin = 'mpicc'
 
 argv_replace = []
 
+# Default array implementation:
+array_lower = "numpy"
+
 for arg in sys.argv:
     if arg.startswith('--with-array='):
         array_prefix = arg.split('=', 1)[1]
+        array_lower = array_prefix.lower()
     elif arg.startswith('--with-mpicc='):
         mpicc_bin = arg.split('=', 1)[1]
     else:
@@ -48,8 +52,18 @@ distutils.unixccompiler.UnixCCompiler = MPI_UnixCCompiler
 # now go on and do the actual setup
 
 SOURCE = ["src/mmpi_module.c"]
-INCLUDES = [os.path.join( get_python_inc(), array_prefix )
-            ]
+
+if( array_lower == "numeric" ):
+    INCLUDES = [os.path.join( get_python_inc(), array_prefix ),
+                ]
+elif( array_lower == "numpy" ):
+    INCLUDES = [os.path.join( get_python_lib(), array_prefix, "core", "include", "numpy" ),
+                ]
+else:
+    INCLUDES = [os.path.join( get_python_inc(), array_prefix ),
+                os.path.join( get_python_lib(), array_prefix, "core", "include", "numpy" ),
+                ]
+    
 MPESOURCE = ["src/mpe_module.c"]
 LIBRARIES = ["mpe"]
 
