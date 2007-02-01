@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 The goal is to illustrate how you might create an interactive
 parallel interpreter with this MPI package.
