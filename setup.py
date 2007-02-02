@@ -19,7 +19,8 @@ mpicc_bin = 'mpicc'
 argv_replace = []
 
 # Default array implementation:
-array_lower = "numpy"
+array_lower="numpy"
+enable_mpe=False
 
 for arg in sys.argv:
     if arg.startswith('--with-array='):
@@ -27,6 +28,8 @@ for arg in sys.argv:
         array_lower = array_prefix.lower()
     elif arg.startswith('--with-mpicc='):
         mpicc_bin = arg.split('=', 1)[1]
+    elif arg.startswith('--enable-mpe'):
+        enable_mpe = True
     else:
         argv_replace.append(arg)
 
@@ -69,6 +72,14 @@ LIBRARIES = ["mpe"]
 
 print 'Setting MMPI setup with Python ',sys.executable,', version ',sys.version
 
+if( enable_mpe ):
+    extension_modules = [Extension('_mpi', SOURCE, include_dirs=INCLUDES),
+                         Extension('_mpe', MPESOURCE, include_dirs=INCLUDES, libraries=LIBRARIES),
+                         ]
+else:
+    extension_modules = [Extension('_mpi', SOURCE, include_dirs=INCLUDES),
+                         ]
+
 setup(name='MMPI',
       version='1.0',
       description='Lightweight MPI module for Python 2.4+',
@@ -77,7 +88,6 @@ setup(name='MMPI',
       author_email='steder@gmail.com',
       packages=['mpi'],
       ext_package='mpi',
-      ext_modules=[Extension('_mpi', SOURCE, include_dirs=INCLUDES),
-                   Extension('_mpe', MPESOURCE, include_dirs=INCLUDES, libraries=LIBRARIES)],
+      ext_modules=extension_modules,
       )
 
