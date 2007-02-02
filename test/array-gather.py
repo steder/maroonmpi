@@ -1,5 +1,4 @@
-import Numeric as nm
-#import numpy as nm
+import numpy as nm
 import mpi
 import mpi.array
 rank,size = mpi.init()
@@ -7,9 +6,9 @@ rank,size = mpi.init()
 assert size >= 2
 
 if(rank == 0):
-    mydata = nm.ones((3,3,3),nm.Int32)
+    mydata = nm.ones((3,3,3),nm.int32)
 else:
-    mydata = nm.zeros((3,3,3),nm.Int32)
+    mydata = nm.zeros((3,3,3),nm.int32)
 
 result = mpi.array.gather( mydata, 0, mpi.MPI_COMM_WORLD )
 
