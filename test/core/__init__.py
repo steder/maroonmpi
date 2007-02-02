@@ -26,5 +26,16 @@ testList = [{"script":'init.py', "nprocs":1, "summary":'passing test(control)', 
              "summary":"non-blocking send test w/wait","expected":PASS},
             {"script":'isend-2process.py',"nprocs":2,
              "summary":"non-blocking send test w/test","expected":PASS},
+
+            # BEGIN: Core Examples
+            {"script":"max.py","nprocs":2,
+             "summary":"example: computing the maximum","expected":PASS},
+            {"script":"max2.py","nprocs":2,
+             "summary":"example2: computing the maximum","expected":PASS},
+            {"script":"montecarlo.py","nprocs":2,
+             "summary":"example monte carlo simulation","expected":PASS},
+            {"script":"pympi-ex.py","nprocs":2,
+             "summary":"pympi syntax example","expected":PASS},
+            
            ]
 
