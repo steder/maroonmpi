@@ -102,10 +102,10 @@ try:
         modules = sys.argv[1:]
     elif( len(sys.argv) == 2 ):
         # Run the module specified as an argument
-        modules = sys.argv[1]
+        modules = [sys.argv[1],]
     else:
         # Run the default case, just the core module
-        modules = ["pympi"]
+        modules = ["core",]
         
     mode = os.P_WAIT
 
@@ -114,52 +114,60 @@ try:
     them easier to manage.  I.E. testCases[0] and results[0] will be corresponding values.
     This allows us to lookup information about the test and display it later.
     """
-    testCases = {# TestNumber:{"script":'script.py', "nprocs":N, "summary":''},
-        }
-    
     index = 0
+    testModules = {}
+    results = {}
     for module in modules:
+        testCases = {# TestNumber:{"script":'script.py', "nprocs":N, "summary":''},
+            }
         m = __import__(module)
         testList = m.testList
         for test in testList:
             testCases[index] = test
+            testCases[index]["script"] = os.path.join( module, testCases[index]["script"])
             index += 1
-            
-    results = {}
+        testModules[module] = testCases
+        results[module] = {}
 
-    for key in testCases.keys():
-        # Unpack testCase info:
-        script = os.path.realpath( testCases[key]["script"] )
-        numprocs = testCases[key]["nprocs"]
+    for module in testModules.keys():
+        testCases = testModules[module] 
+        for key in testCases.keys():
+            # Unpack testCase info:
+            script = os.path.realpath( testCases[key]["script"] )
+            numprocs = testCases[key]["nprocs"]
 
-        # Run test case:
-        exe = os.popen( "which mpiexec" ).readline().strip("\n")
-        python = os.popen( "which python" ).readline().strip("\n")
-        args = ("-l", "-n", "%s"%(numprocs),"%s"%(python),  "%s"%(script),)
-        print exe,string.join(args," "),": ... ",
-        result = os.spawnv( os.P_WAIT, exe, (exe,)+args )
+            # Run test case:
+            exe = os.popen( "which mpiexec" ).readline().strip("\n")
+            python = os.popen( "which python" ).readline().strip("\n")
+            args = ("-l", "-n", "%s"%(numprocs),"%s"%(python),  "%s"%(script),)
+            print exe,string.join(args," "),": ... ",
+            result = os.spawnv( os.P_WAIT, exe, (exe,)+args )
 
-        # Store the results by key:
-        results[key] = result
-        if( results[key] == 0 ):
-            print PASS
-        else:
-            print FAIL
+            # Store the results by key:
+            results[module][key] = result
+            if( results[module][key] == 0 ):
+                print PASS
+            else:
+                print FAIL
 
     # Testing is finished, output a table of results:
-    print padRightN("Test",30), padRightN("Script",20), padRightN("NPROCS",10),
-    print padRightN("Expected",10), "Result"
-    for key in results.keys(): 
-        if ( results[key] == 0 ):
-            result = PASS
-        else:
-            result = FAIL
-        # These all print to a single 80 column line:
-        print padRightN(testCases[key]["summary"], 30),
-        print padRightN(testCases[key]["script"],20),
-        print padRightN(str(testCases[key]["nprocs"]),10),
-        print padRightN(testCases[key]["expected"],10),
-        print result
+    print "\nSummary of results by module:"
+    for module in testModules.keys():
+        print padRightN("Testing Module: %s"%(module),30), padRightN("Script",20), padRightN("NPROCS",10),
+        print padRightN("Expected",10), "Result"
+        testCases = testModules[module]
+        for key in results[module].keys(): 
+            if ( results[module][key] == 0 ):
+                result = PASS
+            else:
+                result = FAIL
+            # These all print to a single 80 column line:
+            print padRightN(testCases[key]["summary"], 30),
+            print padRightN(testCases[key]["script"],20),
+            print padRightN(str(testCases[key]["nprocs"]),10),
+            print padRightN(testCases[key]["expected"],10),
+            print result
+        print "\n"
         
 except:
     traceback.print_exc()

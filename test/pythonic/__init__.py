@@ -10,6 +10,10 @@ This file is used by at least:
 
 PASS,FAIL="PASS!","FAIL!"
 
-testList = [{"script":'passes.py', "nprocs":1, "summary":'passing test(control)', "expected":PASS},
-            {"script":'fails.py', "nprocs":1, "summary":'failure test(control)', "expected":FAIL},
+
+testList = [            ### BEGIN 'Pythonic' interface tests
+            {"script":'pythonic-bcast.py',"nprocs":2,
+             "summary":"user-friendly bcast test","expected":PASS},
+
            ]
+
