@@ -1,0 +1,5 @@
+Before running this scripts you should start an MPD daemon.
+
+For example, MPD on a single multiprocessor (Quad Core Mac Pro for instance):
+
+$ mpdboot -ncpus=4
