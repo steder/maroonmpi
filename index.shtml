@@ -24,6 +24,15 @@
     <div id="content">
       <!--Body-->
       <h3>MMPI News</h3>
+      <h4>2/2/06: Bug fixes and updates</h4>
+      <p>
+      <center><a href=""><img src="" alt="jumpshot screenshot"></a></center>
+      A number of modifications to MPE and to the init routine should get things working properly on x86_64 platforms.
+      <ul>
+      <li>MPE is no longer built by default.</li>
+      <li>Installer modified to handle the new location of the Numpy header files.</li>
+      </ul>
+      </p>
       <h4>10/16/06: Release 1.1!</h4>
       <p>What's new?
       <ul>
