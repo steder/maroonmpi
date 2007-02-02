@@ -80,8 +80,8 @@ else:
     extension_modules = [Extension('_mpi', SOURCE, include_dirs=INCLUDES),
                          ]
 
-setup(name='MMPI',
-      version='1.0',
+setup(name='MaroonMPI',
+      version='1.1',
       description='Lightweight MPI module for Python 2.4+',
       long_description='',
       author='Mike Steder',

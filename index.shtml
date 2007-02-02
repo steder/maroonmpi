@@ -27,7 +27,7 @@
       <h4>2/2/06: Bug fixes and updates</h4>
       <p>
       <center><a href=""><img src="" alt="jumpshot screenshot"></a></center>
-      A number of modifications to MPE and to the init routine should get things working properly on x86_64 platforms.
+      A number of modifications to MPE and to the init routine should get things working properly on x86_64 platforms.  I will no longer be maintaining the Windows MMPI build.  Windows users will need to download the source and build themselves.  If someone would like to maintain the windows binary version they can e-mail me and we can discuss how they can help.
       <ul>
       <li>MPE is no longer built by default.</li>
       <li>Installer modified to handle the new location of the Numpy header files.</li>

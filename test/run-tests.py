@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # A python script to execute a series of parallel python test scripts for MaroonMPI.
+# This script handles either a single test or an entire directory of tests
 import sys, os, traceback, string
-
+PASS,FAIL="PASS!","FAIL!"
 """
 - ABOUT THIS SCRIPT:
 
 This script runs a long series of MaroonMPI test scripts.
+
+This test handles both MPI and MPE module tests.
 
 An example of what a single test command looks like:
 
@@ -76,33 +79,10 @@ Note the trailing comma!  It is important that args is a tuple!
  where N is the number of processors to run script.py with.
  Test Scripts should assert they're running on sufficient processors.
 """
-
 # This is now all set in an seperate python file:
-import mpitests
-from mpitests import PASS, FAIL
-
-#PASS,FAIL="PASS!","FAIL!"
 #testList = [{"script":'passes.py', "nprocs":1, "summary":'passing control test', "expected":PASS},
 #            {"script":'fails.py', "nprocs":1, "summary":'failure control test', "expected":FAIL},
 #           ]
-
-
-
-"""
- Test list maintains the order or the tests.  We add them to this dictionary to make
- them easier to manage.  I.E. testCases[0] and results[0] will be corresponding values.
- This allows us to lookup information about the test and display it later.
-"""
-testCases = {
-             # TestNumber:{"script":'script.py', "nprocs":N, "summary":''},
-            }
-
-index = 0
-for test in mpitests.testList:
-    testCases[index] = test
-    index += 1
-    
-results = {}
 
 def padRightN( str, N ):
     """
@@ -117,10 +97,35 @@ def padRightN( str, N ):
     return str
 
 try:
-    #numprocs = int(sys.argv[1])
-    #script = os.path.realpath(sys.argv[2])
-
+    if  ( len(sys.argv) > 2 ):
+        # Run the modules specified as arguments:
+        modules = sys.argv[1:]
+    elif( len(sys.argv) == 2 ):
+        # Run the module specified as an argument
+        modules = sys.argv[1]
+    else:
+        # Run the default case, just the core module
+        modules = ["pympi"]
+        
     mode = os.P_WAIT
+
+    """
+    Test list maintains the order or the tests.  We add them to this dictionary to make
+    them easier to manage.  I.E. testCases[0] and results[0] will be corresponding values.
+    This allows us to lookup information about the test and display it later.
+    """
+    testCases = {# TestNumber:{"script":'script.py', "nprocs":N, "summary":''},
+        }
+    
+    index = 0
+    for module in modules:
+        m = __import__(module)
+        testList = m.testList
+        for test in testList:
+            testCases[index] = test
+            index += 1
+            
+    results = {}
 
     for key in testCases.keys():
         # Unpack testCase info:

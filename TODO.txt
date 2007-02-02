@@ -1,13 +1,20 @@
-MPI Threading support
-MPI IO Support
-Other advanced MPI functionality
-
-Fix / Test Collective Operations (MAX_LOC, MIN_LOC), and Non-blocking Collective Methods
-
 Finish defining docstrings. 
-  * Make the docstrings clearer and more consistent stylisticly with each other.
+  * Make the docstrings clearer and more consistent 
+
 
 Add more test functions and examples.    
-  * Unit Testing?
+  * Parallen PyUnit?
 
-Add the rest of the MPI functions
+Implement MAX_LOC and MIN_LOC collective operations
+Implement Non-blocking collective operations
+
+Implement Cartesian decomposition functions
+Implement other built in MPI decompositions
+
+MPI Threading support
+
+MPI IO Support
+
+Dynamic Process Allocation support
+
+
