@@ -19,7 +19,7 @@ mpicc_bin = 'mpicc'
 argv_replace = []
 
 # Default array implementation:
-array_lower="numpy"
+array_lower,array_prefix="numpy","numpy"
 enable_mpe=False
 
 for arg in sys.argv:
