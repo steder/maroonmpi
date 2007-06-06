@@ -113,6 +113,6 @@ if __name__=="__main__":
         console = ParallelConsole( )
         console.interact()
         mpi.finalize()
-    except:
+    finally:
         mpi.finalize()
-        raise
+

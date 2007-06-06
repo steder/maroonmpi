@@ -107,17 +107,15 @@ class ParallelConsole( code.InteractiveConsole ):
                 more = 0
         
 if __name__=="__main__":
-    try:
-        import numpy
-        from mpi import pympi
-        array = numpy.zeros((2,2),'i')
-        print array.dtype
-        pympi.isend(array,0)
-        result = pympi.recv()
-        print result
-        #result = pympi.bcast(array)
-        #print result
-        #console = ParallelConsole( )
-        #console.interact()
-    except:
-        raise
+    import numpy
+    from mpi import pympi
+    array = numpy.zeros((2,2),'i')
+    print array.dtype
+    pympi.isend(array,0)
+    result = pympi.recv()
+    print result
+    # result = pympi.bcast(array)
+    # print result
+    # console = ParallelConsole( )
+    # console.interact()
+
