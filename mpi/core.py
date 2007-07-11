@@ -106,7 +106,7 @@ def abort( comm, errorcode=None ):
         else:
             return _mpi.mpi_abort( comm )
     else:
-        raise mpiException,"Attempt to call %s before mpi.init!"%("mpi.abort")
+        raise MpiException,"Attempt to call %s before mpi.init!"%("mpi.abort")
 
 def allgather( sendbuffer, sendcount, sendtype, recvcount,
             recvtype, comm ):
@@ -121,7 +121,7 @@ def allgather( sendbuffer, sendcount, sendtype, recvcount,
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_allgather( sendbuffer, sendcount, sendtype, recvcount, recvtype, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.allgather")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.allgather")
 
 def allgatherv( sendbuffer, sendcount, sendtype,
                 recvcount, displacements, recvtype, comm ):
@@ -136,7 +136,7 @@ def allgatherv( sendbuffer, sendcount, sendtype,
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_allgatherv( sendbuffer, sendcount, sendtype, recvcount, displacements, recvtype, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.allgatherv")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.allgatherv")
 
 def allreduce( send_buff, count, datatype, op, comm ):
     """
@@ -151,7 +151,7 @@ def allreduce( send_buff, count, datatype, op, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_allreduce( send_buff, count, datatype, op, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.allreduce")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.allreduce")
 
 def alltoall( **args ):
     """
@@ -178,7 +178,7 @@ def barrier( comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_barrier( comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.barrier")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.barrier")
 
 def bcast( input, count, datatype, source, comm ):
     """
@@ -190,7 +190,7 @@ def bcast( input, count, datatype, source, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_bcast( input, count, datatype, source, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.bcast")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.bcast")
 
 def comm_create( comm, group ):
     """
@@ -201,7 +201,7 @@ def comm_create( comm, group ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_create( comm, group )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_create")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_create")
 
 def comm_dup( comm ):
     """
@@ -210,7 +210,7 @@ def comm_dup( comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_dup( comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_dup")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_dup")
 
 def comm_group( comm ):
     """
@@ -219,7 +219,7 @@ def comm_group( comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_group( comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_group")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_group")
 
 def comm_rank( comm ):
     """
@@ -230,7 +230,7 @@ def comm_rank( comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_rank( comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_rank")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_rank")
 
 def comm_size( comm ):
     """
@@ -241,7 +241,7 @@ def comm_size( comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_size( comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_size")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_size")
 
 def comm_split( incomm, color, key=0 ):
     """
@@ -264,7 +264,7 @@ def comm_split( incomm, color, key=0 ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_comm_split( incomm, color, key )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_split")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.comm_split")
 
 def error():
     """
@@ -275,7 +275,7 @@ def error():
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_error( )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.error")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.error")
 
 def error_string():
     """
@@ -286,7 +286,7 @@ def error_string():
     if( _mpi.mpi_initialized() ):
         return _mpi.mpi_error_string()
     else:
-        raise mpiException,"Attempt to call %s before mpi.init!"%("mpi.error_string")
+        raise MpiException,"Attempt to call %s before mpi.init!"%("mpi.error_string")
 
 def finalize(  ):
     """
@@ -300,7 +300,7 @@ def finalize(  ):
         # print "Calling _mpi.mpi_finalize()..."
         return _mpi.mpi_finalize()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.finalize")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.finalize")
 
 def gather( sendbuffer, sendcount, sendtype, recvcount,
             recvtype, root, comm ):
@@ -316,7 +316,7 @@ def gather( sendbuffer, sendcount, sendtype, recvcount,
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_gather( sendbuffer, sendcount, sendtype, recvcount, recvtype, root, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.gather")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.gather")
 
 def gatherv( sendbuffer, sendcount, sendtype, recvcount,
              displacements, recvtype, root, comm ):
@@ -333,7 +333,7 @@ def gatherv( sendbuffer, sendcount, sendtype, recvcount,
                                  recvcount, displacements, recvtype,
                                  root, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.gatherv")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.gatherv")
 
 def get_count( datatype ):
     """
@@ -342,7 +342,7 @@ def get_count( datatype ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_get_count( datatype )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.get_count")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.get_count")
 
 def get_processor_name():
     """
@@ -351,7 +351,7 @@ def get_processor_name():
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_get_processor_name()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.get_processor_name")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.get_processor_name")
 
 def get_version():
     """
@@ -360,7 +360,7 @@ def get_version():
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_get_version()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.get_version")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.get_version")
 
 def group_incl( group, n, ranks ):
     """
@@ -369,7 +369,7 @@ def group_incl( group, n, ranks ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_group_incl( group, n, ranks )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.group_incl")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.group_incl")
 
 def group_rank( group ):
     """
@@ -378,7 +378,7 @@ def group_rank( group ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_group_rank( group )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.group_rank")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.group_rank")
 
 def initialized( ):
     """
@@ -402,16 +402,19 @@ def init( argc=None, argv=None ):
     Typically argc and argv are defined as:
       import sys
       argc = len(sys.argv)
-      argv = sys.argv 
+      argv = sys.argv
+
+    This should be the first function called in a MPI process.  If this is called
+    more than once in a single process a MpiException will be thrown.
     """
     if (_mpi.mpi_initialized()):
-        raise mpiException, "mpi.init has already been called!"
+        raise MpiException, "mpi.init has already been called!"
     if ( (not argc) or (not argv) ):
         import sys
-        result = _mpi.mpi_init( len(sys.argv), sys.argv )
+        _mpi.mpi_init( len(sys.argv), sys.argv )
     else:
-        result = _mpi.mpi_init( argc, argv )
-    return result
+        _mpi.mpi_init( argc, argv )
+    return comm_rank( MPI_COMM_WORLD ), comm_size( MPI_COMM_WORLD )
 
 def iprobe( source, tag, comm ):
     """
@@ -420,7 +423,7 @@ def iprobe( source, tag, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_iprobe( source, tag, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.iprobe")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.iprobe")
 
 def irecv( count, datatype, source, tag, comm ):
     """
@@ -477,7 +480,7 @@ def irecv( count, datatype, source, tag, comm ):
         id,buffer = _mpi.mpi_irecv( count, datatype, source, tag, comm )
         return id,buffer
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.irecv")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.irecv")
 
 def isend( buffer, count, datatype, destination, tag, comm ):
     """
@@ -515,7 +518,7 @@ def isend( buffer, count, datatype, destination, tag, comm ):
         id = _mpi.mpi_isend( buffer, count, datatype, destination, tag, comm )
         return id
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.isend")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.isend")
 
 def probe( source, tag, comm ):
     """
@@ -524,7 +527,7 @@ def probe( source, tag, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_probe( source, tag, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.probe")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.probe")
 
 def recv( count, datatype, source, tag, comm ):
     """
@@ -551,7 +554,7 @@ def recv( count, datatype, source, tag, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_recv( count, datatype, source, tag, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.recv")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.recv")
     
 def reduce( send_buff, count, datatype, op, root, comm ):
     """
@@ -570,7 +573,7 @@ def reduce( send_buff, count, datatype, op, root, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_reduce( send_buff, count, datatype, op, root, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.reduce")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.reduce")
 
 def scan( send_buff, count, datatype, op, comm ):
     """
@@ -586,7 +589,7 @@ def scan( send_buff, count, datatype, op, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_scan( send_buff, count, datatype, op, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.scan")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.scan")
 
 def scatter( sendbuffer, send_count, send_type,
              receive_count, receive_type, root, comm ):
@@ -597,7 +600,7 @@ def scatter( sendbuffer, send_count, send_type,
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_scatter( sendbuffer, send_count, send_type, receive_count, receive_type, root, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.scatter")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.scatter")
 
 def scatterv( sendbuffer, send_count, displacements,
               send_type, receive_count, receive_type,
@@ -619,7 +622,7 @@ def scatterv( sendbuffer, send_count, displacements,
                                   send_type, receive_count, receive_type,
                                   root, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.scatterv")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.scatterv")
 
 def send( buffer, count, datatype, destination, tag, comm ):
     """
@@ -647,7 +650,7 @@ def send( buffer, count, datatype, destination, tag, comm ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_send( buffer, count, datatype, destination, tag, comm )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.send")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.send")
 
 def status( ):
     """
@@ -659,7 +662,7 @@ def status( ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_status()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.status")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.status")
 
 def test( request ):
     """
@@ -678,7 +681,7 @@ def test( request ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_test( request )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.test")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.test")
 
 def wait( request ):
     """
@@ -701,7 +704,7 @@ def wait( request ):
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_wait( request )
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.wait")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.wait")
 
 def wtick():
     """
@@ -712,7 +715,7 @@ def wtick():
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_wtick()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.wtick")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.wtick")
     
 def wtime():
     """
@@ -723,7 +726,7 @@ def wtime():
     if ( _mpi.mpi_initialized() ):
         return _mpi.mpi_wtime()
     else:
-        raise mpiException, "Attempt to call %s before mpi.init!"%("mpi.wtime")
+        raise MpiException, "Attempt to call %s before mpi.init!"%("mpi.wtime")
 
 
 

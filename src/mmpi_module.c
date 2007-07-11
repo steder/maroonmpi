@@ -106,33 +106,20 @@ static PyObject *mmpi_init(PyObject * self, PyObject * args)
 {
     
     int initialized;
-    int numprocs, myid;
-
     int myargc = 1;
     char **myargv;
     /* Add one for the NULL at the end  */
     myargv = calloc(myargc + 1, sizeof(char *));
     myargv[0] = strdup("maroonmpi");
     myargv[myargc] = NULL;
-
-    /* Setting some default values */
-    numprocs = -1;
-    myid = -1;
-
-    ierror = MPI_Initialized(&initialized);
-
-    if (!initialized) {
-        ierror = MPI_Init(&myargc, &myargv);
-    } 
-
-    ierror = MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-    ierror = MPI_Comm_rank(MPI_COMM_WORLD, &myid);
     
+    ierror = MPI_Init(&myargc, &myargv);
+
     free( myargv[1] );
     free( myargv[0] );
     free( myargv );
 
-    return Py_BuildValue("(ll)", myid, numprocs);
+    return PyInt_FromLong((long) ierror);
 }
 
 #define MPI_FINALIZE_DOC "finalize()\
@@ -242,7 +229,7 @@ void init_mpi(void)
     m = Py_InitModule3("_mpi", mpiMethods, MMPI_MODULE_DOC);
     mpiException = PyErr_NewException("mpi.Exception", NULL, NULL);
     Py_INCREF(mpiException);
-    PyModule_AddObject(m, "mpiException", mpiException);
+    PyModule_AddObject(m, "MpiException", mpiException);
 
     /* Add a lot of MPI constants */
     AddIntConstants(m);

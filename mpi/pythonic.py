@@ -17,8 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
-import core
+import sys,atexit
 import _mpi
+import core
 import array
 import serialobject as sobj
 
@@ -32,20 +33,19 @@ for x in __constants:
 __self__ = vars()
 for x in __attributes.keys():
     # drops the "MPI_" from the beginning of it's constants
-    part = x.split("_")[1:]
-    s = "_".join( part )
+    part = x.split("MPI_")
+    s = part[1]
     __self__[ s ] = __attributes[x]
 
 del __import_list, __constants, __attributes, x, part, s, __self__        
 
-from _mpi import mpiException as MPIError
+from _mpi import MpiException
 
 import types
 __single__=[types.BooleanType, types.FloatType, types.IntType, types.LongType,
             types.NoneType]
 __sequence__=[types.ListType, types.SliceType,
-              #types.StringType, types.StringTypes,
-              types.TupleType]
+              types.StringType, types.TupleType, types.UnicodeType]
 
 SINGLE=0
 SEQUENCE=1
@@ -54,154 +54,81 @@ OBJECT=3
 
 def getMessageType( obj, error="Unsure how to send object of type:"):
     tobj = type(obj)
-    if type(message) in __single__: #single elements (integers, characters)
+    if tobj in __single__: #single elements (integers, characters)
         messageType = SINGLE
-    elif type(message) in __sequence__: #non-array sequences
+    elif tobj in __sequence__: #non-array sequences
         try:
-            dataType = getSequenceType( message )
+            dataType = getSequenceType( obj )
             messageType = SEQUENCE
         except TypeError:
             # If it's a funky sequence (like a list of lists)
             # simply serialize and send.
             messageType = OBJECT
-    elif array.isArray(message): #Array Case
+    elif array.isArray(obj): #Array Case
         messageType = ARRAY
     else: #object case
         messageType = OBJECT
+    return messageType
         
 def getSingleType( obj,error="Unsure how to send object of type:" ):
     tobj = type(obj)
-    if  ( tobj == types.NoneType or tobj == types.BooleanType or
-          tobj == types.IntType ):
+    if  tobj in [types.NoneType, types.BooleanType, types.IntType]:
         return core.MPI_INT
-    elif( tobj == types.LongType ):
+    elif tobj == types.LongType:
         return core.MPI_LONG
-    elif( tobj == types.FloatType):
+    elif tobj == types.FloatType:
         return core.MPI_DOUBLE
-    #elif( tobj == types.StringType):
+    #elif( tobj in types.StringTypes):
     #    return core.MPI_CHAR
     else:
         raise TypeError,"%s %s ... aborting!"%(error, tobj)
-    return
 
-def getSequenceElementType( obj,error="Unsure how to send object of type:" ):
-    tobj = type(obj)
-    if  ( tobj == types.NoneType or tobj == types.BooleanType or
-          tobj == types.IntType ):
-        return core.MPI_INT
-    elif( tobj == types.LongType ):
-        return core.MPI_LONG
-    elif( tobj == types.FloatType):
-        return core.MPI_DOUBLE
-    #elif( tobj == types.StringType):
-    #    return core.MPI_CHAR
-    else:
-        raise TypeError,"%s %s ... aborting!"%(error, tobj)
-    return
+# def getSequenceElementType( obj,error="Unsure how to send object of type:" ):
+#     tobj = type(obj)
+#     if  tobj in [types.NoneType, types.BooleanType, types.IntType]:
+#         return core.MPI_INT
+#     elif tobj == types.LongType:
+#         return core.MPI_LONG
+#     elif tobj == types.FloatType:
+#         return core.MPI_DOUBLE
+#     elif tobj in types.StringTypes:
+#         return core.MPI_CHAR
+#     else:
+#         raise TypeError,"%s %s ... aborting!"%(error, tobj)
 
 def getSequenceType( obj ):
     if(len(obj)>0):
-        objType = getSequenceElementType(obj[0],
-                                error="Unable to send %s of"%(type(obj) ))
+        objType = getSingleType(obj[0],error="Unable to send %s of"%(type(obj) ))
+        return objType
     else:
         raise TypeError,"Message is empty sequence, nothing to send!"
-    return objType
 
 def formatReturnValue( obj, typestring ):
     if(typestring == "single"):
         return obj[0]
-    elif(typestring == "sequence"):
-        return obj
-    elif(typestring == "array"):
-        return obj
-    elif(typestring == "object"):
-        return obj
-    elif( obj == None ):
-        return obj
     else:
-        raise "Unknown return type!"
+        return obj
 
 ### "pythonic" MPI functions:
 def allgather( message, root=0, comm=core.MPI_COMM_WORLD ):
     """
     """
-    tag = 0
-    rank = core.comm_rank( comm )
-    if( rank == root ):
-        messageType = getMessageType( message )
-        core.send( messageType, 1, core.MPI_INT, destination, tag, comm )
-    else:
-        messageType = int(core.recv( 1, core.MPI_INT, destination, tag, comm ))
-    if messageType == SINGLE:
-        print "Single Element Case:"
-        dataType = getSingleType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        returnvalue = core.allgather( message, 1, dataType, 1, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "single" )
-    elif messageType == SEQUENCE: #non-array sequences
-        print "Sequence Case:"
-        dataType = getSequenceType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        length = int(core.bcast( len(message), 1, core.MPI_INT, root, comm))
-        returnvalue = core.allgather( message, length, dataType, length, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "sequence" )
-    elif messageType == ARRAY: #Array Case
-        print "Array Case:"
-        returnvalue = array.allgather(message, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "array" )
-    else: #object case
-        print "Generic Object Case:"
-        returnvalue = sobj.allgather( message, root, comm )# (2) are the same
-        returnvalue = formatReturnValue( returnvalue, "object" )
-    return returnvalue
+    raise NotImplementedError,"allgather has not been implemented"
 
 def allgatherv( message, root=0, comm=core.MPI_COMM_WORLD ):
     """
     """
-    tag = 0
-    rank = core.comm_rank( comm )
-    # Not all processors have messages of the same type or size:
-    messageType = getMessageType( message )
-    messageTypes = core.allgather( messageType, 1, core.MPI_INT, 1, core.MPI_INT, root, comm )
-    messageType = messageTypes[0]
-    for mtype in messageTypes:
-        if mtype == messageType:
-            pass
-        else:
-            messageType = OBJECT
-    if messageType == SINGLE:
-        print "Single Element Case:"
-        dataType = getSingleType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        returnvalue = core.allgatherv( message, 1, dataType, 1, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "single" )
-    elif messageType == SEQUENCE: #non-array sequences
-        print "Sequence Case:"
-        dataType = getSequenceType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        length = len(message)
-        displacements = int(core.allgather( len(message), 1, core.MPI_INT, 1, core.MPI_INT, root, comm))
-        returnvalue = core.allgatherv( message, length, dataType, length, displacements, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "sequence" )
-    elif messageType == ARRAY: #Array Case
-        print "Array Case:"
-        returnvalue = array.allgatherv(message, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "array" )
-    else: #object case
-        print "Generic Object Case:"
-        returnvalue = sobj.allgatherv( message, root, comm )# (2) are the same
-        returnvalue = formatReturnValue( returnvalue, "object" )
-    return returnvalue
+    raise NotImplementedError,"allgatherv has not been implemented"
 
 def alltoall( **args ):
     """
     """
-    raise NotImplementedError
+    raise NotImplementedError,"alltoall has not been implemented"
 
 def alltoallv( **args ):
     """
     """
-    raise NotImplementedError
+    raise NotImplementedError,"alltoallv has not yet been implemented"
 
 def bcast( message, root=0, comm=core.MPI_COMM_WORLD ):
     """
@@ -230,13 +157,13 @@ def bcast( message, root=0, comm=core.MPI_COMM_WORLD ):
     # Finally: do something with mydata
     # on all processors.
     """
-    tag = 0
     rank = core.comm_rank( comm )
     if( rank == root ):
         messageType = getMessageType( message )
-        core.send( messageType, 1, core.MPI_INT, destination, tag, comm )
+        core.bcast( messageType, 1, core.MPI_INT, root, comm )
     else:
-        messageType = int(core.recv( 1, core.MPI_INT, destination, tag, comm ))
+        messageType = int(core.bcast( 0, 1, core.MPI_INT, root, comm ))
+
     if messageType == SINGLE:
         print "Single Element Case:"
         dataType = getSingleType( message )
@@ -246,8 +173,10 @@ def bcast( message, root=0, comm=core.MPI_COMM_WORLD ):
     elif messageType == SEQUENCE: #non-array sequences
         print "Sequence Case:"
         dataType = getSequenceType( message )
+        print dataType
         dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
         length = int(core.bcast( len(message), 1, core.MPI_INT, root, comm))
+        print message, length, dataType, root, comm
         returnvalue = core.bcast( message, length, dataType, root, comm )
         returnvalue = formatReturnValue( returnvalue, "sequence" )
     elif messageType == ARRAY: #Array Case
@@ -278,74 +207,13 @@ def comm_split(color, key = 0, comm=core.MPI_COMM_WORLD ):
 def gather( self, message, root = 0, comm=core.MPI_COMM_WORLD ):
     """
     """
-    tag = 0
-    rank = core.comm_rank( comm )
-    if( rank == root ):
-        messageType = getMessageType( message )
-        core.send( messageType, 1, core.MPI_INT, destination, tag, comm )
-    else:
-        messageType = int(core.recv( 1, core.MPI_INT, destination, tag, comm ))
-    if messageType == SINGLE:
-        print "Single Element Case:"
-        dataType = getSingleType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        returnvalue = core.gather( message, 1, dataType, 1, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "single" )
-    elif messageType == SEQUENCE: #non-array sequences
-        print "Sequence Case:"
-        dataType = getSequenceType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        length = int(core.bcast( len(message), 1, core.MPI_INT, root, comm))
-        returnvalue = core.gather( message, length, dataType, length, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "sequence" )
-    elif messageType == ARRAY: #Array Case
-        print "Array Case:"
-        returnvalue = array.gather(message, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "array" )
-    else: #object case
-        print "Generic Object Case:"
-        returnvalue = sobj.gather( message, root, comm )# (2) are the same
-        returnvalue = formatReturnValue( returnvalue, "object" )
-    return returnvalue
+    raise NotImplementedError, "gather has not yet been implemented"
 
 def gatherv( self, message, displacements, root = 0, comm=core.MPI_COMM_WORLD ):
     """
     """
-    tag = 0
-    rank = core.comm_rank( comm )
-    # Not all processors have messages of the same type or size:
-    messageType = getMessageType( message )
-    messageTypes = core.allgather( messageType, 1, core.MPI_INT, 1, core.MPI_INT, root, comm )
-    messageType = messageTypes[0]
-    for mtype in messageTypes:
-        if mtype == messageType:
-            pass
-        else:
-            messageType = OBJECT
-    if messageType == SINGLE:
-        print "Single Element Case:"
-        dataType = getSingleType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        returnvalue = core.gatherv( message, 1, dataType, 1, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "single" )
-    elif messageType == SEQUENCE: #non-array sequences
-        print "Sequence Case:"
-        dataType = getSequenceType( message )
-        dataType = int(core.bcast( dataType, 1, core.MPI_INT, root, comm ))
-        length = len(message)
-        displacements = int(core.allgather( len(message), 1, core.MPI_INT, 1, core.MPI_INT, root, comm))
-        returnvalue = core.gatherv( message, length, dataType, length, displacements, dataType, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "sequence" )
-    elif messageType == ARRAY: #Array Case
-        print "Array Case:"
-        returnvalue = array.gatherv(message, root, comm )
-        returnvalue = formatReturnValue( returnvalue, "array" )
-    else: #object case
-        print "Generic Object Case:"
-        returnvalue = sobj.gatherv( message, root, comm )# (2) are the same
-        returnvalue = formatReturnValue( returnvalue, "object" )
-    return returnvalue
-
+    raise NotImplementedError, "gatherv has not yet been implemented"
+    
 def irecv(source=ANY_SOURCE, tag=ANY_TAG, comm=core.MPI_COMM_WORLD ):
     """
     message,request = comm.recv( [source(defaults to ANY_SOURCE), tag(defaults to ANY_TAG)])
@@ -572,21 +440,17 @@ class Communicator(communicator.Communicator):
         self.rank = -1
         
     def __str__(self):
-        s = "<communicator#: "
-        s += str(self.id)
-        s += ",size:" + str(self.size)
-        s += ",rank:" + str(self.rank)
-        s += ">"
+        s = "<communicator #%s, size: %s, this processes rank: %s>"%(str(self.id), str(self.size), str(self.rank))
         return s
-
+    
     def bcast( self, message, root=0 ):
         """
-        value = bcast( rootvalue[, root=0, communicator=mpi.COMM_WORLD] )
+        value = communicator.bcast( rootvalue[, root=0])
+        Broadcast:  A collective operation that communicates the value on
+        processor 'root' of 'communicator' to all processors in
+        'communicator'.
         
-        Broadcast:  A collective operation that communicates the value on processor 'root' of
-        of communicator mpi.COMM_WORLD to all processors in communicator mpi.COMM_WORLD
-        
-        rootvalue's value is ignored on non-root processors.
+        'rootvalue''s value is ignored on non-root processors.
         
         Example of use:
         
@@ -596,15 +460,10 @@ class Communicator(communicator.Communicator):
         else:
             mydata = 0
         # broadcast my data from root to all processors:
-        mydata = mpi.bcast( mydata )
-        # Or equivalently:
-        mydata = mpi.bcast( mydata, 0, mpi.COMM_WORLD )
-        # Or even:
         mydata = mpi.COMM_WORLD.bcast( mydata )
-        # Yet another:
-        mydata = mpi.COMM_WORLD.bcast( mydata, 0 )
-        # Finally: do something with mydata
-        # on all processors.
+        # Make root explicit or set root to something else:
+        root = 7 # node 7 is the root of this bcast (perhaps only node 7's value is correct)
+        mydata = mpi.COMM_WORLD.bcast( mydata, root )
         """
         return bcast( message, root, self.id )
 
@@ -717,4 +576,13 @@ from request import Request
 # Overloaded MPI_COMM_WORLD
 COMM_WORLD=Communicator( COMM_WORLD )
 
+### Python MPI Initialization and Finalization
+"""
+Specifically, importing the module should initialize MPI.
 
+Finalization should happen automatically when the process exits.
+
+Essentially, these are the PyMPI rules for init and finalize.
+"""
+rank,size = core.init( len( sys.argv ), sys.argv )
+atexit.register( core.finalize )

@@ -59,7 +59,7 @@ def isArray( obj ):
         if(type(obj) == Numeric.ArrayType):
             return True
     if "numpy" in __arraylib__:
-        if(type(obj) == numpy.ArrayType):
+        if(type(obj) == numpy.ndarray):
             return True
     return False
 

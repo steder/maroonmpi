@@ -84,7 +84,7 @@ Note the trailing comma!  It is important that args is a tuple!
 #            {"script":'fails.py', "nprocs":1, "summary":'failure control test', "expected":FAIL},
 #           ]
 
-def padRightN( str, N ):
+def padN( str, N ):
     """
     Returns string 'str' padded to 'N' length with space characters.
     """
@@ -153,8 +153,8 @@ try:
     # Testing is finished, output a table of results:
     print "\nSummary of results by module:"
     for module in testModules.keys():
-        print padRightN("Testing Module: %s"%(module),30), padRightN("Script",20), padRightN("NPROCS",10),
-        print padRightN("Expected",10), "Result"
+        print padN("Testing Module: %s"%(module),30), padN("Script",20), padN("NPROCS",10),
+        print padN("Expected",10), "Result"
         testCases = testModules[module]
         for key in results[module].keys(): 
             if ( results[module][key] == 0 ):
@@ -162,10 +162,10 @@ try:
             else:
                 result = FAIL
             # These all print to a single 80 column line:
-            print padRightN(testCases[key]["summary"], 30),
-            print padRightN(testCases[key]["script"],20),
-            print padRightN(str(testCases[key]["nprocs"]),10),
-            print padRightN(testCases[key]["expected"],10),
+            print padN(testCases[key]["summary"], 30),
+            print padN(testCases[key]["script"],20),
+            print padN(str(testCases[key]["nprocs"]),10),
+            print padN(testCases[key]["expected"],10),
             print result
         print "\n"
         

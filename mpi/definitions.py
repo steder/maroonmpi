@@ -50,4 +50,4 @@ del __import_list, __constants, __attributes, x, __self__
 The default MPI Exception Type.  If any exceptions are thrown by the
 C Extension module _mpi, they will be of type mpi.Exception.
 """
-from _mpi import mpiException
+from _mpi import MpiException
