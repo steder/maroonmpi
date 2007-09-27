@@ -2,6 +2,10 @@
 # A python script to execute a series of parallel python test scripts for MaroonMPI.
 # This script handles either a single test or an entire directory of tests
 import sys, os, traceback, string
+sys.path.append( os.path.realpath(os.path.join("..")) )
+print sys.path
+sys.exit()
+
 PASS,FAIL="PASS!","FAIL!"
 """
 - ABOUT THIS SCRIPT:
