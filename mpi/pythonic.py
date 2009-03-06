@@ -436,11 +436,9 @@ import request
 class Communicator(communicator.Communicator):
     def __init__(self,id):
         communicator.Communicator.__init__(self,int(id))
-        self.size = -1
-        self.rank = -1
-        
+
     def __str__(self):
-        s = "<communicator #%s, size: %s, this processes rank: %s>"%(str(self.id), str(self.size), str(self.rank))
+        s = "<communicator #%s, size: %s, this processes rank: %s>"%(self.id, self.size(), self.rank())
         return s
     
     def bcast( self, message, root=0 ):
@@ -573,8 +571,6 @@ class Communicator(communicator.Communicator):
 # Request Objects
 from request import Request
 
-# Overloaded MPI_COMM_WORLD
-COMM_WORLD=Communicator( COMM_WORLD )
 
 ### Python MPI Initialization and Finalization
 """
@@ -585,4 +581,6 @@ Finalization should happen automatically when the process exits.
 Essentially, these are the PyMPI rules for init and finalize.
 """
 rank,size = core.init( len( sys.argv ), sys.argv )
+# Overloaded MPI_COMM_WORLD
+COMM_WORLD=Communicator( _mpi.MPI_COMM_WORLD )
 atexit.register( core.finalize )
