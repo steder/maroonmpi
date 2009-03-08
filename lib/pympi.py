@@ -58,7 +58,7 @@ for x in __attributes.keys():
 
 del __import_list, __constants, __attributes, x, part, s, __self__        
 
-from _mpi import mpiException as MPIError
+from _mpi import MpiException as MPIError
 
 # Initialization and Finalization
 # PyMPI does this at interpreter startup
