@@ -1,0 +1,65 @@
+#
+#  subunit shell bindings.
+#  Copyright (C) 2006  Robert Collins <robertc@robertcollins.net>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+This tree contains shell bindings to the subunit protocol. They are written
+entirely in shell, and unit tested in shell. See the tests/ directory for the
+test scripts. You can use `make check` to run the tests. There is a trivial
+python test_shell.py which uses the pyunit gui to expose the test results in a
+compact form.
+
+The shell bindings consist of four functions which you can use to output test
+metadata trivially. See share/subunit.sh for the functions and comments.
+
+However, this is not a full test environment, its support code for reporting to
+subunit. You can look at ShUnit (http://shunit.sourceforge.net) for 'proper'
+shell based xUnit functionality. There is a patch for ShUnit 1.3
+(subunit-ui.patch) in the subunit source tree. I hope to have that integrated
+upstream in the near future. I will delete the copy of the patch in the subunit
+tree a release or two later.
+
+If you are a test environment maintainer - either homegrown, or ShUnit or some
+such, you will need to see how the subunit calls should be used. Here is what
+a manually written test using the bindings might look like:
+
+
+subunit_start_test "test name"
+# determine if test passes or fails
+result=$(something)
+if [ $result == 0 ]; then
+  subunit_pass_test "test name"
+else
+  subunit_fail_test "test name" <<END
+Something went wrong running something:
+exited with result: '$func_status'
+END
+fi
+
+Which when run with a subunit test runner will generate something like:
+test name ... ok
+
+on success, and:
+
+test name ... FAIL
+
+======================================================================
+FAIL: test name
+----------------------------------------------------------------------
+RemoteError:
+Something went wrong running something:
+exited with result: '1'

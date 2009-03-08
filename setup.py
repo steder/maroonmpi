@@ -86,7 +86,7 @@ setup(name='MaroonMPI',
       long_description='',
       author='Mike Steder',
       author_email='steder@gmail.com',
-      packages=['mpi'],
+      packages=['lib'],
       ext_package='mpi',
       ext_modules=extension_modules,
       )

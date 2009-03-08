@@ -1,0 +1,216 @@
+
+  subunit: extensions to Python unittest to get test results from subprocesses.
+  Copyright (C) 2005  Robert Collins <robertc@robertcollins.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+Subunit
+-------
+
+Subunit is attempting to extend unittest with a clean and simple api to
+run arbitrary external test suites and return the results to standard
+Python unittest.
+
+Subunit comes in three parts:
+ * Protocol writers (clients)
+ * Protocol readers (servers)
+ * Filters
+ 
+A reader component acts as a test suite in the language that it is written
+for. Currently subunit only provides a Python protocol reader.
+
+Writers output test results in subunit form. Writers are typically
+test suite runners or test suite result objects in specific languages.
+Currently subunit provides writers for Python, C, C++, and shell.
+
+Filters provide translation filtering capabilities and can be used to modify a
+stream on-the-fly. Currently subunit provides:
+ * tap2subunit - convert perl's TestAnythingProtocol to subunit.
+ * subunit2pyunit - convert a subunit stream to pyunit test results.
+ * subunit-stats - generate a summary of a subunit stream.
+ * subunit-tags - add or remove tags from a stream.
+
+The subunit code is organised at the top level by directories for language
+bindings, and additionally the filters directory for filters.
+
+Using subunit in Python
+-----------------------
+
+1) As a runner for external tests (potentially in other languages)
+2) As a process boundary for unittest TestCases to prevent them fiddling with
+   in-process state (i.e. singletons).
+3) As a wrapper around a TestCase (or Suite) to run a group of tests
+   externally.
+
+1) As a runner for external tests
+=================================
+This is supported on all platforms with Python 2.4.
+For each test script you want to run, declare a ExecTestCase with one
+or more tests whose docstring defines the script to run:
+
+import subunit
+import unittest
+class TestCProgram(subunit.ExecTestCase):
+
+    def test_script_one(self):
+        """./bin/script_one"""
+
+    def test_script_two(self):
+       """./bin/script_two"""
+
+# Yes, the test prefix on the methods matters.
+# Then run this in whatever normal way you would run Python unittests.
+# If you don't have a specific test runner, you can run it using the
+# default one in unittest.py:
+
+if __name__ == '__main__':
+     unittest.main()
+
+2) As a process boundary for unittest TestCases
+===============================================
+This is currently supported only on platforms
+that support os.fork(), which allows us to
+transparently introduce a process boundary
+without affecting manual test parameterisation.
+*** TODO explain in more detail and sketch out
+*** a solution for win32
+Just import subunit and derive your test cases
+from subunit.IsolatedTestCase:
+
+import subunit
+
+class TestFoo(subunit.IsolatedTestCase):
+
+    def test_something_globally(self):
+        SomethingGlobal.do()
+        self.assertEqual(SomethingGlobal.value(), 3)
+        # the run() method of IsolatedTestCase will intercept the
+        # test execution, fork() Python to create a new process,
+        # then run the test and report the results back to the parent
+        # process.
+
+# you run this in the normal way you run test cases.
+
+3) As a wrapper around a TestCase to run a group of tests externally.
+=====================================================================
+
+import subunit
+import unittest
+
+class TestFoo(unittest.TestCase):
+
+    def test_foo(self):
+        ...
+
+
+def test_suite():
+    result = subunit.IsolatedTestSuite()
+    loader = unittest.TestLoader()
+    result.addTestCase(loader.loadTestsFromName(__name__))
+    return result
+
+# you can test the result of test_suite() as follows (or in any normal Python
+# manner.
+runner = unittest.TextTestRunner(verbosity=2)
+runner.run(test_suite())
+# enjoy.
+
+
+Some requirements:
+  The shape of the external unittest should not need to be known a-priori.
+  After the test has run, tests should still exist as discrete objects, so that
+  anything taking a reference to them doesn't get 50 copies of the same object.
+
+Sample subunit wire contents
+----------------------------
+
+test: test foo works
+success: test foo works.
+test: tar a file.
+failure: tar a file. [
+..
+ ]..  space is eaten.
+foo.c:34 WARNING foo is not defined.
+]
+a writeln to stdout
+
+===========
+.F
+a writeln to stdout
+
+========================
+FAILURE: tar a file.
+-------------------
+..
+]..  space is eaten.
+foo.c:34 WARNING foo is not defined.
+========================
+
+
+Subunit protocol description
+----------------------------
+test|testing|test:|testing: test label
+success|success:|successful|successful: test label
+success|success:|successful|successful: test label [
+...
+]
+failure test label
+failure: test label
+failure test label [
+...
+]
+failure: test label [
+...
+]
+error: test label
+error: test label [
+]
+skip[:] test label
+skip[:] test label [
+]
+xfail[:] test label
+xfail[:] test label [
+]
+tags: [-]TAG ...
+time: YYYY-MM-DD HH:MM:SSZ
+unexpected output on stdout -> stdout.
+exit w/0 or last test -> error
+Tags given outside a test are applied to all following tests
+Tags given after a test: line and before the result line for the same test
+apply only to that test, and inheric the current global tags.
+A '-' before a tag is used to remove tags - e.g. to prevent a global tag
+applying to a single test, or to cancel a global tag.
+In Python, tags are assigned to the .tags attribute on the RemoteTest objects
+created by the TestProtocolServer.
+
+The time element acts as a clock event - it sets the time for all future events.
+Currently this is not exposed at the python API layer.
+
+The skip result is used to indicate a test that was found by the runner but not
+fully executed due to some policy or dependency issue. Currently this is
+represented in Python as a successful test.
+The xfail result is used to indicate a test that was expected to fail failing
+in the expected manner. As this is a normal condition for such tests it is
+represented as a successful test in Python.
+In future, skip and xfail results will be represented semantically in Python,
+but some discussion is underway on the right way to do this.
+
+
+TODO:
+def run:
+    do a fork,
+      this process runs server
+      child runs client and calls self.run() with a SubprocessTestResult
