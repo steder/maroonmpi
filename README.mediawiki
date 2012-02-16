@@ -1,0 +1,106 @@
+#summary Overview of MaroonMPI Features (Out of date!)
+#labels Featured,Phase-Requirements
+
+= MaroonMPI Features =
+
+== Features ==
+
+MMPI has the following features:
+
+ * Compiles and Installs as a Python Package
+ * Strict ANSI CPython extensions(Portable)
+ * Similar syntax to C and Fortran MPI libraries
+ * Implements the most commonly needed MPI functions
+ * Supports Numeric arrays and numerical Python types
+ * Barebones support for arbitrary Python objects
+ * Multiple Executable support (MPMD)
+ * Interoperates with C and Fortran Extensions
+ * CPython core is simple and extensible
+ * Multiple PythonMPI programming modes available
+   * new default "pythonic" interface
+   * PyMPI compatibility interface
+   * Low-level core API
+ 
+== Mis-features ==
+
+MMPI has the following problems:
+
+ * Similar syntax to C and Fortran MPI libraries
+ * Not all MPI functions are implemented
+ * Not all Collective Operations are implemented (MAX_LOC, MIN_LOC)
+ * Needs more tests and more thorough documentation
+
+
+== New Pythonic Style ==
+
+MMPI now has a new default style that wraps the original low level function interface. This interface's goal is:
+
+ * more "pythonic" rather then C style
+ * Type arguments are no longer required / supported for the majority of functions
+ * Length arguments are no longer required / supported for the majority of functions
+ * Tags, communicators, "root" arguments are now optional
+ * Single elements are no longer received as 1-element arrays but properly returned as single elements.
+ * Arrays are now properly sent
+ * More advanced collective operations are supported
+ * Communicators now support more MPI operations as member functions.
+
+=== Original Syntax ===
+Here's a quick example of an oldstyle hello world program using the new MMPI module 
+{{{
+      # old-style MMPI example:
+      from mpi import core as mpi
+      rank,size = mpi.init()
+      singleton_comm = mpi.comm_split( mpi.MPI_COMM_WORLD, rank, size )
+      mpi.barrier(mpi.MPI_COMM_WORLD)
+      if( rank == 0 ):
+          mpi.send( "Hello World", 11, mpi.MPI_CHAR, 1, 0, mpi.MPI_COMM_WORLD )
+      elif( rank == 1):
+          r = str( mpi.recv( 11, mpi.MPI_CHAR, 1, 0, mpi.MPI_COMM_WORLD ) )
+      else:
+          pass
+}}}
+=== New Syntax ===
+Now let's try it again with the new interface
+
+{{{
+      # new-style MMPI example:
+      import mpi
+      rank,size = mpi.init()
+      singleton_comm = mpi.COMM_WORLD.split( rank, size ) 
+      
+      mpi.barrier() # Many operations operate on MPI_COMM_WORLD by default now
+      
+      if( rank == 0 ):
+          mpi.send( "Hello World", 1 )
+          mpi.send( "Hello World", 1, mpi.COMM_WORLD )
+          mpi.COMM_WORLD.send( "Hello World", 1 )
+      elif( rank == 1 ):
+          mpi.recv( 0 )
+          mpi.recv( 0, mpi.COMM_WORLD )
+          mpi.COMM_WORLD.recv( 0 )
+      else:
+          pass
+}}}
+   
+=== New PyMPI-style Interface ===
+
+=== Original "core" Interface ===
+
+== MMPI and PyMPI ==
+
+PyMPI is an excellent MPI solution for Python. Due to some problems with support for MPMD and Interfacing with C/Fortran Extensions that use MPI I ended up working on MMPI as an alternative.
+
+I'm currently working to implement all of the nice syntactic sugar of PyMPI while keeping the C code base as simple as possible. I have been extending MMPI pretty much exclusively in Python, which has allowed me to make large changes to the behavior of MMPI quickly and easily. This also makes MMPI easier for other people to customize.
+
+Currently the major difference between PyMPI and MMPI is the syntax. The following table illustrates some of these differences. Note how MMPI syntax is very similar to C/Fortran MPI.
+
+
+|| || PyMPI ||	MMPI ||
+|| Initialization ||	None* ||	rank,size = mpi.init( [len(sys.argv),sys.argv]** ) ||
+|| Finding rank or size of a process || myrank = mpi.rank || myrank = mpi.comm_rank(Communicator) ||
+|| Send || mpi.send(data,0[,0]**) || mpi.send(data,len(data),type,0,0,comm) ||
+|| Comm Split || mpi.WORLD.split(color[,key]**)	|| mpi.comm_split(color,key,mpi.MPI_COMM_WORLD) ||
+*: PyMPI Initializes MPI when the interpreter starts up
+**: [] denote optional arguments
+
+© m. steder (2006)
